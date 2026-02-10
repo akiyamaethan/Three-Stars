@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ThreeStars
 {
-    [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
+    [CreateAssetMenu(fileName = "New Playing Card", menuName = "Playing Card")]
     public class PlayingCard : ScriptableObject
     //Three types of card: PlayingCard, ChefCard, and UpgradeCard
     {
@@ -13,8 +13,10 @@ namespace ThreeStars
         public Sprite rankImage;
         public Sprite suitImage;
         public string cardText;
+        public CardSuit cardSuit;
+        public CardRank cardRank;
 
-        public enum cardSuit
+        public enum CardSuit
         {
             Entree,
             Side,
@@ -22,7 +24,7 @@ namespace ThreeStars
             Sauce
         }
 
-        public enum cardRank
+        public enum CardRank
         {
             Two,
             Three,
@@ -38,5 +40,25 @@ namespace ThreeStars
             King,
             Ace
         }
+    }
+
+    [CreateAssetMenu(fileName = "New Chef Card", menuName = "Chef Card")]
+    public class ChefCard : ScriptableObject
+    //Three types of card: PlayingCard, ChefCard, and UpgradeCard
+    {
+        public Sprite cardBackground;
+        public Sprite cardImage;
+        public string cardText;
+        public string description;
+    }
+
+    [CreateAssetMenu(fileName = "New Upgrade Card", menuName = "Upgrade Card")]
+    public class UpgradeCard : ScriptableObject
+    //Three types of card: PlayingCard, ChefCard, and UpgradeCard
+    {
+        public Sprite cardBackground;
+        public Sprite cardImage;
+        public string cardText;
+        public string description;
     }
 }

@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 468a7aedee3bde74a8243f1b95836269, type: 3}
-  m_Name: Test
-  m_EditorClassIdentifier: 
+  m_Script: {fileID: 0}
+  m_Name: Chef Card Test
+  m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:ChefCard
   cardBackground: {fileID: 0}
-  foodImage: {fileID: 0}
+  cardImage: {fileID: 0}
   cardText: 
+  description: 
