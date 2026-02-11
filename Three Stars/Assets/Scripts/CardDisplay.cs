@@ -19,20 +19,21 @@ public class CardDisplay : MonoBehaviour
     public TMP_Text rankText;
     public TMP_Text suitText;
 
+
+
     void Start()
     {
-        UpdateCardDisplay();
     }
 
     public void UpdateCardDisplay()
     { 
-        cardText.text = cardData.cardText;
         cardBackground.sprite = cardData.cardBackground;
         foodImage.sprite = cardData.foodImage;
         rankImage.sprite = cardData.rankImage;
         suitImage.sprite = cardData.suitImage;
         suitText.text = cardData.cardSuit.ToString();
         rankText.text = cardData.cardRank.ToString();
+        cardText.text = cardData.cardText;
     }
 
 }
