@@ -8,7 +8,7 @@ public class DeckManager : MonoBehaviour
     public List<PlayingCard> deck = new List<PlayingCard>();
     private int currentCardIndex = 0;
 
-    public void Start()
+    public void Awake()
     {
         //Load all card assets from the Resources folder and add them to the deck
         PlayingCard[] allCards = Resources.LoadAll<PlayingCard>("Playing Card Data");
@@ -17,7 +17,11 @@ public class DeckManager : MonoBehaviour
     public void DrawCard(HandManager handManager)
     {
         if (deck.Count == 0)
+        {
+            Debug.LogWarning("Deck is empty! Cannot draw a card.");
             return;
+        }
+            
 
         PlayingCard cardToDraw = deck[currentCardIndex];
         handManager.AddCardToHand(cardToDraw);
