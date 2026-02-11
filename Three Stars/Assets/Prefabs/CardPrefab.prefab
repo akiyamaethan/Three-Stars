@@ -598,11 +598,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8873041213520709203}
   - {fileID: 6524028054179602274}
   - {fileID: 2355457403893357813}
   - {fileID: 3696263318480191996}
   - {fileID: 3948559422447811792}
-  - {fileID: 8873041213520709203}
   m_Father: {fileID: 4604257759612486603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1124,4 +1124,3 @@ MonoBehaviour:
   cardPlay: {x: 0, y: 0}
   playPosition: {x: 0, y: 0, z: 0}
   glowEffect: {fileID: 6538887132376203922}
-  playArrow: {fileID: 0}

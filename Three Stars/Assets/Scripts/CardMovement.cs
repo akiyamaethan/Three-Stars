@@ -34,6 +34,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         switch (currentState)
         {
             case 0: // Idle
+                HandleIdleState();
                 break;
             case 1: // Hovered
                 HandleHoverState();
@@ -47,15 +48,49 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         }
     }
 
+    //Helpers
     private void TransitionToState0()
     {
         currentState = 0;
-        rectTransform.localScale = originalScale;
-        rectTransform.localPosition = originalPosition;
-        rectTransform.localRotation = originalRotation;
-        glowEffect.SetActive(false);
-        //playArrow.SetActive(false);
     }
+
+    public void SetOriginalPosition(Vector3 pos)
+    {
+        originalPosition = pos;
+    }
+
+    //State Handlers
+    private void HandleIdleState()
+    {
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale, Time.deltaTime * 10f);
+        rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, originalPosition, Time.deltaTime * 10f);
+        rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, originalRotation, Time.deltaTime * 10f);
+        glowEffect.SetActive(false);
+    }
+    private void HandleHoverState()
+    {
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
+        glowEffect.SetActive(true);
+    }
+    private void HandleSelectedState()
+    {
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
+        glowEffect.SetActive(true);
+    }
+
+    private void HandlePlayedState()
+    {
+        rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, playPosition, Time.deltaTime * 10f);
+        rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10f);
+        if (Vector3.Distance(rectTransform.localPosition, playPosition) < 0.1f)
+        {
+            rectTransform.localPosition = playPosition;
+            rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
+            //playArrow.SetActive(true);
+        }
+    }
+
+    //Event Handlers
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -64,12 +99,6 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
             currentState = 1;
         }
     }
-    private void HandleHoverState()
-    {
-        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
-        glowEffect.SetActive(true);
-    }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         if (currentState == 1)
@@ -86,23 +115,10 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), eventData.position, eventData.pressEventCamera, out originalLocalPointerPosition);
             originalPanelLocalPosition = rectTransform.localPosition;
         }
-    }
 
-    private void HandleSelectedState()
-    {
-        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
-        glowEffect.SetActive(true);
-    }
-
-    private void HandlePlayedState()
-    {
-        rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, playPosition, Time.deltaTime * 10f);
-        rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10f);
-        if (Vector3.Distance(rectTransform.localPosition, playPosition) < 0.1f)
+        else if (currentState == 2)
         {
-            rectTransform.localPosition = playPosition;
-            rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
-            //playArrow.SetActive(true);
+                currentState = 1;
         }
     }
 }

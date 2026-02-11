@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7cac914d382c4d4dba9e19f137c2887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckManager: {fileID: 0}
+  deckManager: {fileID: 1963552333}
   cardPrefab: {fileID: 8026178266619572407, guid: 16fc6ec015c1b514bbf2ca4de4f7a89f, type: 3}
   handTransform: {fileID: 559969583}
   cardSpacing: 275
@@ -558,8 +558,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 884486012}
   - {fileID: 1963552332}
+  - {fileID: 884486012}
   - {fileID: 559969583}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

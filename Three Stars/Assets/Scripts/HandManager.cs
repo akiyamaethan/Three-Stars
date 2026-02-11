@@ -41,6 +41,12 @@ public class HandManager : MonoBehaviour
         {
             Vector3 targetPosition = new Vector3(startX + i * cardSpacing, 0, 0);
             cardsInHand[i].transform.localPosition = targetPosition;
+
+            CardMovement cardMovement = cardsInHand[i].GetComponent<CardMovement>();
+            if (cardMovement != null)
+            {
+                cardMovement.SetOriginalPosition(targetPosition);
+            }
         }
     }
 
