@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a7aedee3bde74a8243f1b95836269, type: 3}
   m_Name: 10S
   m_EditorClassIdentifier: 
-  cardBackground: {fileID: 0}
+  cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
   foodImage: {fileID: 0}
   rankImage: {fileID: 0}
-  suitImage: {fileID: 0}
+  suitImage: {fileID: 21300000, guid: eb124489f4e4690498fb1299c0e5d67f, type: 3}
   cardText: 
   cardSuit: 3
   cardRank: 8

@@ -4,15 +4,46 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public DeckManager deckManager { get; private set; }
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
     {
-        
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeManagers();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InitializeManagers()
     {
-        
+        deckManager = GetComponentInChildren<DeckManager>();
+
+        if (deckManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Deck Manager");
+            if (prefab != null)
+            {
+                GameObject deckManagerObj = Instantiate(prefab, transform);
+                deckManager = deckManagerObj.GetComponent<DeckManager>();
+            }
+            else
+            {
+                Debug.LogError("Deck Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+    }
+    
+    public int PlayerScore
+    {
+        get { return PlayerScore; }
+        set { PlayerScore = value; }
     }
 }
+

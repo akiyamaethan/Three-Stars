@@ -19,6 +19,13 @@ public class CardDisplay : MonoBehaviour
     public TMP_Text rankText;
     public TMP_Text suitText;
 
+    private Color[] suitColors = new Color[]
+    {
+        new Color(1f, 0.5f, 0.5f), // Light Red
+        new Color(0.5f, 0.5f, 1f), // Light Blue
+        new Color(0.5f, 1f, 0.5f), // Light Green
+        new Color(1f, 1f, 0.5f)    // Light Yellow
+    };
 
 
     void Start()
@@ -27,6 +34,7 @@ public class CardDisplay : MonoBehaviour
 
     public void UpdateCardDisplay()
     { 
+        cardBackground.color = suitColors[(int)cardData.cardSuit];
         cardBackground.sprite = cardData.cardBackground;
         foodImage.sprite = cardData.foodImage;
         rankImage.sprite = cardData.rankImage;
