@@ -8,7 +8,7 @@ using static ThreeStars.PlayingCard;
 
 public class CardDisplay : MonoBehaviour
 {
-    public PlayingCard cardData;
+    public CardInstance cardInstance;
 
     public Image cardImage;
     public Image cardBackground;
@@ -34,6 +34,7 @@ public class CardDisplay : MonoBehaviour
 
     public void UpdateCardDisplay()
     { 
+        var cardData = cardInstance.cardData;
         cardBackground.color = suitColors[(int)cardData.cardSuit];
         cardBackground.sprite = cardData.cardBackground;
         foodImage.sprite = cardData.foodImage;

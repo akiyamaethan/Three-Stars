@@ -21,13 +21,13 @@ public class HandManager : MonoBehaviour
 
     }
 
-    public void AddCardToHand(PlayingCard cardData)
+    public void AddCardToHand(CardInstance cardInstance)
     {
         GameObject newCard = Instantiate(cardPrefab, handTransform.position, Quaternion.identity, handTransform);
         cardsInHand.Add(newCard);
 
         CardDisplay cardDisplay = newCard.GetComponent<CardDisplay>();
-        cardDisplay.cardData = cardData;
+        cardDisplay.cardInstance = cardInstance;
         cardDisplay.UpdateCardDisplay();
 
         UpdateCardPositions();
