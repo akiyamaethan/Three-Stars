@@ -13,6 +13,7 @@ public class HandManager : MonoBehaviour
     public List<GameObject> cardsInHand = new List<GameObject>();
     void Start()
     {
+        deckManager = FindObjectOfType<DeckManager>();
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);
