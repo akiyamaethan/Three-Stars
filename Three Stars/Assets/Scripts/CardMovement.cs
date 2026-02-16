@@ -6,24 +6,25 @@ using UnityEngine.EventSystems;
 public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private RectTransform rectTransform;
-    private Canvas canvas;
-    private Vector2 originalLocalPointerPosition;
-    private Vector3 originalPanelLocalPosition;
+    private RectTransform discardTransform;
     private Vector3 originalScale;
     private Vector3 originalPosition;
     private int currentState = 0;
     private Quaternion originalRotation;
+    private Coroutine animationCoroutine;
+    private GameManager gameManager;
 
     [SerializeField] private float selectScale = 1.1f;
     [SerializeField] private Vector2 cardPlay;
     [SerializeField] private Vector3 playPosition;
     [SerializeField] private GameObject glowEffect;
-    //[SerializeField] private GameObject playArrow;
+    [SerializeField] private float moveDuration = 1.0f;
 
     void Awake()
     {
+        gameManager = GetComponent<GameManager>();
+        discardTransform = gameManager.DiscardPileTransform;
         rectTransform = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
         originalScale = rectTransform.localScale;
         originalPosition = rectTransform.localPosition;
         originalRotation = rectTransform.localRotation;
@@ -59,6 +60,43 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         originalPosition = pos;
     }
 
+    public void Discard()
+    {
+        Vector3 newPos = discardTransform.localPosition;
+        AnimateTo(newPos);
+    }
+
+    // Helper function to start the animation coroutine
+    private void AnimateTo(Vector3 targetPosition)
+    {
+        if (animationCoroutine != null)
+        {
+            StopCoroutine(animationCoroutine);
+        }
+        animationCoroutine = StartCoroutine(AnimatePosition(targetPosition));
+    }
+
+    private IEnumerator AnimatePosition(Vector3 targetPosition)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPosition = transform.localPosition;
+
+        // If we're already very close, just snap to the target
+        if (Vector3.Distance(startPosition, targetPosition) < 0.01f)
+        {
+            transform.localPosition = targetPosition;
+            yield break;
+        }
+
+        while (elapsedTime < moveDuration)
+        {
+            transform.localPosition = Vector3.Lerp(startPosition, targetPosition, elapsedTime / moveDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.localPosition = targetPosition;
+    }
+
     //State Handlers
     private void HandleIdleState()
     {
@@ -80,14 +118,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     private void HandlePlayedState()
     {
-        rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, playPosition, Time.deltaTime * 10f);
-        rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * 10f);
-        if (Vector3.Distance(rectTransform.localPosition, playPosition) < 0.1f)
-        {
-            rectTransform.localPosition = playPosition;
-            rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
-            //playArrow.SetActive(true);
-        }
+        Discard();
     }
 
     //Event Handlers
@@ -112,8 +143,6 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         if (currentState == 1)
         {
             currentState = 2;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), eventData.position, eventData.pressEventCamera, out originalLocalPointerPosition);
-            originalPanelLocalPosition = rectTransform.localPosition;
         }
 
         else if (currentState == 2)

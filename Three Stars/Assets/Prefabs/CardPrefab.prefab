@@ -1116,3 +1116,5 @@ MonoBehaviour:
   cardPlay: {x: 0, y: 0}
   playPosition: {x: 0, y: 0, z: 0}
   glowEffect: {fileID: 6538887132376203922}
+  moveDuration: 1
+  discardTransform: {fileID: 0}

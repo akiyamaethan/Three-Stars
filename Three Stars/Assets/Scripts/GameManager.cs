@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public DeckManager deckManager { get; private set; }
     public static GameManager Instance { get; private set; }
 
+    public RectTransform DiscardPileTransform;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -40,10 +42,11 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    private int _playerScore;
     public int PlayerScore
     {
-        get { return PlayerScore; }
-        set { PlayerScore = value; }
+        get { return _playerScore; }
+        set { _playerScore = value; }
     }
 }
 

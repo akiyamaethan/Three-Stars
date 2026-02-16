@@ -18,6 +18,8 @@ public class HandManager : MonoBehaviour
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);
+        deckManager.DrawCard(this);
+        deckManager.DrawCard(this);
 
     }
 
