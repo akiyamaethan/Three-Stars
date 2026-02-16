@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public DeckManager deckManager { get; private set; }
+    public ThreeStars.ProgressionManager progressionManager { get; private set; }
     public static GameManager Instance { get; private set; }
 
     public RectTransform DiscardPileTransform;
@@ -38,6 +39,21 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.LogError("Deck Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+
+        progressionManager = GetComponentInChildren<ThreeStars.ProgressionManager>();
+        if (progressionManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Progression Manager");
+            if (prefab != null)
+            {
+                GameObject progressionManagerObj = Instantiate(prefab, transform);
+                progressionManager = progressionManagerObj.GetComponent<ThreeStars.ProgressionManager>();
+            }
+            else
+            {
+                Debug.LogError("Progression Manager prefab not found in Resources/Prefabs.");
             }
         }
     }

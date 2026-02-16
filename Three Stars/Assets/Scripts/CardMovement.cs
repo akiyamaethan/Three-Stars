@@ -12,6 +12,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private int currentState = 0;
     private Quaternion originalRotation;
     private Coroutine animationCoroutine;
+    private HandManager handManager;
 
     [SerializeField] private float selectScale = 1.1f;
     [SerializeField] private Vector2 cardPlay;
@@ -22,6 +23,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     void Awake()
     {
         discardTransform = GameManager.Instance.DiscardPileTransform;
+        handManager = FindObjectOfType<HandManager>();
         rectTransform = GetComponent<RectTransform>();
         originalScale = rectTransform.localScale;
         originalPosition = rectTransform.localPosition;
@@ -42,7 +44,6 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
                 HandleSelectedState();
                 break;
             case 3: // Played
-                HandlePlayedState();
                 break;
         }
     }
@@ -53,12 +54,22 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         currentState = 0;
     }
 
+    public void TransitionToPlayedState()
+    {
+        currentState = 3;
+    }
     public void SetOriginalPosition(Vector3 pos)
     {
         originalPosition = pos;
     }
 
     public void Discard()
+    {
+        Vector3 newPos = discardTransform.localPosition;
+        AnimateTo(newPos);
+    }
+
+    public void Play()
     {
         Vector3 newPos = discardTransform.localPosition;
         AnimateTo(newPos);
@@ -112,11 +123,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
         glowEffect.SetActive(true);
-    }
 
-    private void HandlePlayedState()
-    {
-        Discard();
     }
 
     //Event Handlers
@@ -141,11 +148,13 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         if (currentState == 1)
         {
             currentState = 2;
+            handManager.SetSelected(this);
         }
 
         else if (currentState == 2)
         {
-                currentState = 1;
+            currentState = 1;
+            handManager.SetSelected(this);
         }
     }
 }

@@ -11,6 +11,7 @@ public class HandManager : MonoBehaviour
     public Transform handTransform;
     public float cardSpacing = 150f;
     public List<GameObject> cardsInHand = new List<GameObject>();
+    public List<CardMovement> selectedCards = new List<CardMovement>();
     void Start()
     {
         deckManager = FindObjectOfType<DeckManager>();
@@ -36,6 +37,18 @@ public class HandManager : MonoBehaviour
         UpdateCardPositions();
     }
 
+    public void SetSelected (CardMovement card)
+    {
+        if (selectedCards.Contains(card))
+        {
+            selectedCards.Remove(card);
+        }
+        else
+        {
+            selectedCards.Add(card);
+        }
+    }
+
     private void UpdateCardPositions()
     {
         
@@ -52,6 +65,28 @@ public class HandManager : MonoBehaviour
                 cardMovement.SetOriginalPosition(targetPosition);
             }
         }
+    }
+
+    public void OnPlayButtonPressed()
+    {
+        List<CardMovement> cardsToPlay = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
+        cardsToPlay.ForEach(card =>
+        {
+            card.Play();
+            cardsInHand.Remove(card.gameObject);
+        });
+        selectedCards.Clear();
+    }
+
+    public void OnDiscardButtonPressed()
+    {
+        List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
+        cardsToDiscard.ForEach(card =>
+        {
+            card.Play();
+            cardsInHand.Remove(card.gameObject);
+        });
+        selectedCards.Clear();
     }
 
 

@@ -59,6 +59,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1148349468161273964}
   - component: {fileID: 2494264861198825309}
+  - component: {fileID: 2696398285363206890}
+  - component: {fileID: 7086410325758763431}
+  - component: {fileID: 3364075139984116529}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -80,6 +83,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5602071525065009049}
+  - {fileID: 5989703916196990443}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2494264861198825309
@@ -92,5 +96,92 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bb1cde1a159f534281263794c0cdbe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DiscardPileTransform: {fileID: 0}
+--- !u!114 &2696398285363206890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4515530474400995754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1ef8ff3b9d3b944b060d28d1310955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardModalRoot: {fileID: 0}
+  toggleKey: 109
+--- !u!114 &7086410325758763431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4515530474400995754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b31c696065b382a4d96d3d10fad06657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllCards: []
+--- !u!114 &3364075139984116529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4515530474400995754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f54f6cec22ea489429568832bbfd59e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardsCSV: {fileID: 4900000, guid: 95cb149373228e54a8e8e33e4b84932b, type: 3}
+  contentParent: {fileID: 0}
+  cardRowPrefab: {fileID: 3754861640723130625, guid: c3b5409b06f768145b3e1a7f1fe37a0f, type: 3}
+--- !u!1 &8485527219901867284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5989703916196990443}
+  - component: {fileID: 8836689705484230706}
+  m_Layer: 0
+  m_Name: Progression Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5989703916196990443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485527219901867284}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1148349468161273964}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8836689705484230706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485527219901867284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d779b64fd6d69a747aad19a9dc18d644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

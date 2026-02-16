@@ -30,10 +30,10 @@ public class CardDatabase : MonoBehaviour
 
             CardData card = new CardData
             {
-                Type = values[0].Trim(),
-                Name = values[1].Trim(),
-                Level = int.Parse(values[2].Trim()),
-                Bonus = float.Parse(values[3].Trim())
+                Type = values[0].Trim(' ', '\"'),
+                Name = values[1].Trim(' ', '\"'),
+                Level = int.Parse(values[2].Trim(' ', '\"')),
+                Bonus = float.Parse(values[3].Trim(' ', '\"'))
             };
 
             AllCards.Add(card);
