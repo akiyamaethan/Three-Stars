@@ -12,7 +12,6 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private int currentState = 0;
     private Quaternion originalRotation;
     private Coroutine animationCoroutine;
-    private GameManager gameManager;
 
     [SerializeField] private float selectScale = 1.1f;
     [SerializeField] private Vector2 cardPlay;
@@ -22,8 +21,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     void Awake()
     {
-        gameManager = GetComponent<GameManager>();
-        discardTransform = gameManager.DiscardPileTransform;
+        discardTransform = GameManager.Instance.DiscardPileTransform;
         rectTransform = GetComponent<RectTransform>();
         originalScale = rectTransform.localScale;
         originalPosition = rectTransform.localPosition;

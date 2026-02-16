@@ -9,11 +9,12 @@ public class HandManager : MonoBehaviour
     public DeckManager deckManager; // Assign in inspector
     public GameObject cardPrefab; // Assign in inspector
     public Transform handTransform;
-    public float cardSpacing = 250f;
+    public float cardSpacing = 150f;
     public List<GameObject> cardsInHand = new List<GameObject>();
     void Start()
     {
         deckManager = FindObjectOfType<DeckManager>();
+        deckManager.DrawCard(this);
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);
         deckManager.DrawCard(this);

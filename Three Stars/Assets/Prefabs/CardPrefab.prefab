@@ -1022,7 +1022,7 @@ RectTransform:
   m_GameObject: {fileID: 8026178266619572407}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_LocalScale: {x: 90, y: 90, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4255246728936826731}
@@ -1117,4 +1117,3 @@ MonoBehaviour:
   playPosition: {x: 0, y: 0, z: 0}
   glowEffect: {fileID: 6538887132376203922}
   moveDuration: 1
-  discardTransform: {fileID: 0}
