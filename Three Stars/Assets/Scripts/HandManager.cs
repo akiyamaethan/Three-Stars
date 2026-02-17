@@ -8,6 +8,7 @@ public class HandManager : MonoBehaviour
 {
     public DeckManager deckManager; // Assign in inspector
     public GameObject cardPrefab; // Assign in inspector
+    public HandEvaluator handEvaluator; // Assign in inspector
     public Transform handTransform;
     public float cardSpacing = 150f;
     public List<GameObject> cardsInHand = new List<GameObject>();
@@ -15,14 +16,10 @@ public class HandManager : MonoBehaviour
     void Start()
     {
         deckManager = FindObjectOfType<DeckManager>();
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-        deckManager.DrawCard(this);
-
+        for (int i = 0; i < ProgressionManager.Instance.handSize; i++)
+        {
+            deckManager.DrawCard(this);
+        }
     }
 
     public void AddCardToHand(CardInstance cardInstance)
@@ -69,13 +66,25 @@ public class HandManager : MonoBehaviour
 
     public void OnPlayButtonPressed()
     {
-        List<CardMovement> cardsToPlay = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
-        cardsToPlay.ForEach(card =>
+        if (selectedCards.Count > 4)
+            return;
+
+        List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
+        List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject)); //this is the list of cards on the canvas
+        foreach (CardMovement card in selectedCards)
+        {
+            cardsToScore.Add(card.GetComponent<CardDisplay>().cardInstance);
+        }
+        HandEvaluator.HandRank handRank;
+        int finalScore = ScoreManager.Instance.CalculateScore(cardsToScore, out handRank);
+        Debug.Log($"Played hand with rank {handRank} for {finalScore} points!");
+        cardsToMove.ForEach(card =>
         {
             card.Play();
             cardsInHand.Remove(card.gameObject);
         });
         selectedCards.Clear();
+        DrawToFullHand();
     }
 
     public void OnDiscardButtonPressed()
@@ -83,11 +92,17 @@ public class HandManager : MonoBehaviour
         List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
         cardsToDiscard.ForEach(card =>
         {
-            card.Play();
+            card.Discard();
             cardsInHand.Remove(card.gameObject);
         });
         selectedCards.Clear();
+        DrawToFullHand();
     }
-
-
+    private void DrawToFullHand()
+    {
+        while (cardsInHand.Count < ProgressionManager.Instance.handSize)
+        {
+            deckManager.DrawCard(this);
+        }
+    }
 }

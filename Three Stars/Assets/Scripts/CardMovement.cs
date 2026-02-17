@@ -57,6 +57,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     public void TransitionToPlayedState()
     {
         currentState = 3;
+        glowEffect.SetActive(false);
     }
     public void SetOriginalPosition(Vector3 pos)
     {
@@ -65,12 +66,14 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     public void Discard()
     {
+        TransitionToPlayedState();
         Vector3 newPos = discardTransform.localPosition;
         AnimateTo(newPos);
     }
 
     public void Play()
     {
+        TransitionToPlayedState();
         Vector3 newPos = discardTransform.localPosition;
         AnimateTo(newPos);
     }
