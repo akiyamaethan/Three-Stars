@@ -90,15 +90,29 @@ public class HandEvaluator : MonoBehaviour
 
     private bool IsStraight(List<CardInstance> hand)
     {
-        List<int> ranks = new List<int>();
+        var uniqueRanks = new HashSet<int>();
         foreach (var card in hand)
         {
-            ranks.Add((int)card.cardData.cardRank);
+            uniqueRanks.Add((int)card.cardData.cardRank);
         }
-        ranks.Sort();
-        for (int i = 1; i < ranks.Count; i++)
+
+        if (uniqueRanks.Count != 4) return false;
+
+        var sortedRanks = new List<int>(uniqueRanks);
+        sortedRanks.Sort();
+
+        bool isAceLow = sortedRanks[0] == (int)PlayingCard.CardRank.Two &&
+                        sortedRanks[1] == (int)PlayingCard.CardRank.Three &&
+                        sortedRanks[2] == (int)PlayingCard.CardRank.Four &&
+                        sortedRanks[3] == (int)PlayingCard.CardRank.Ace;
+        if (isAceLow)
         {
-            if (ranks[i] != ranks[i - 1] + 1)
+            return true;
+        }
+
+        for (int i = 0; i < sortedRanks.Count - 1; i++)
+        {
+            if (sortedRanks[i + 1] != sortedRanks[i] + 1)
                 return false;
         }
         return true;

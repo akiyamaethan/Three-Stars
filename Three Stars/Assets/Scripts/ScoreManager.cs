@@ -46,10 +46,7 @@ public class ScoreManager : MonoBehaviour
         int finalScore = Mathf.RoundToInt(totalPips * multiplier);
         GameManager.Instance.PlayerScore += finalScore;
 
-        foreach (var card in hand)
-        {
-            prog.RegisterPlay(card.cardData.cardSuit, card.cardData.cardRank);
-        }
+        prog.RegisterPlay(hand);
 
         return finalScore;
 

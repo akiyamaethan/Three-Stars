@@ -55,13 +55,31 @@ namespace ThreeStars
             }
         }
 
-        public void RegisterPlay(PlayingCard.CardSuit suit, PlayingCard.CardRank rank)
+        public void RegisterPlay(List<CardInstance> hand)
         {
-            string suitKey = "Suit_" + suit.ToString();
-            IncrementPlay(suitKey, GetSuitLevel(suit), (newLevel) => SetSuitLevel(suit, newLevel));
+            HashSet<PlayingCard.CardSuit> uniqueSuits = new HashSet<PlayingCard.CardSuit>();
+            HashSet<PlayingCard.CardRank> uniqueRanks = new HashSet<PlayingCard.CardRank>();
 
-            string rankKey = "Rank_" + rank.ToString();
-            IncrementPlay(rankKey, GetRankLevel(rank), (newLevel) => SetRankLevel(rank, newLevel));
+            foreach (var cardInstance in hand)
+            {
+                if (cardInstance.cardData != null)
+                {
+                    uniqueRanks.Add(cardInstance.cardData.cardRank);
+                    uniqueSuits.Add(cardInstance.cardData.cardSuit);
+                }
+            }
+
+            foreach (var suit in uniqueSuits)
+            {
+                string suitKey = "Suit_" + suit.ToString();
+                IncrementPlay(suitKey, GetSuitLevel(suit), (newLevel) => SetSuitLevel(suit, newLevel));
+            }
+            
+            foreach (var rank in uniqueRanks)
+            {
+                string rankKey = "Rank_" + rank.ToString();
+                IncrementPlay(rankKey, GetRankLevel(rank), (newLevel) => SetRankLevel(rank, newLevel));
+            }
         }
 
         private void IncrementPlay(string key, int currentLevel, System.Action<int> setLevelCallback)
