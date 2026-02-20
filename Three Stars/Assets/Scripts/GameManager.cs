@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public DeckManager deckManager { get; private set; }
     public ThreeStars.ProgressionManager progressionManager { get; private set; }
+    public ScoreManager scoreManager { get; private set; }
+    public ShiftManager shiftManager { get; private set; }
     public static GameManager Instance { get; private set; }
 
     public RectTransform DiscardPileTransform;
@@ -56,6 +58,37 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Progression Manager prefab not found in Resources/Prefabs.");
             }
         }
+
+        scoreManager = GetComponentInChildren<ScoreManager>();
+        if (scoreManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Score Manager");
+            if (prefab != null)
+            {
+                GameObject scoreManagerObj = Instantiate(prefab, transform);
+                scoreManager = scoreManagerObj.GetComponent<ScoreManager>();
+            }
+            else
+            {
+                Debug.LogError("Score Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+
+        shiftManager = GetComponentInChildren<ShiftManager>();
+        if (shiftManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Shift Manager");
+            if (prefab != null)
+            {
+                GameObject shiftManagerObj = Instantiate(prefab, transform);
+                shiftManager = shiftManagerObj.GetComponent<ShiftManager>();
+            }
+            else
+            {
+                Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+        shiftManager.ResetShift(); // Initializes shift manager values
     }
     
     private int _playerScore;

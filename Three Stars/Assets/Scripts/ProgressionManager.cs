@@ -9,6 +9,10 @@ namespace ThreeStars
 
         // Player variables
         public int handSize = 7;
+        public int plays = 3;
+        public int discards = 3;
+        public int shiftNumber = 0;
+        public int prevScore = 0; //used to determine next score threshold
 
         // Card progression variables
         private Dictionary<string, int> playCounts = new Dictionary<string, int>();
@@ -31,16 +35,16 @@ namespace ThreeStars
         public int aceRankLevel = 1;
 
         // Hand progression variables
-        public float pairMult = 1.0f;
-        public float twoPairMult = 1.0f;
-        public float rainbowMult = 1.0f;
-        public float tripsMult = 1.0f;
+        public float pairMult = 1.25f;
+        public float twoPairMult = 1.35f;
+        public float rainbowMult = 1.15f;
+        public float tripsMult = 1.45f;
         public float highCardMult = 1.0f;
-        public float straightMult = 1.0f;
-        public float flushMult = 1.0f;
-        public float quadsMult = 1.0f;
-        public float straightFlushMult = 1.0f;
-        public float royalFlushMult = 1.0f;
+        public float straightMult = 1.75f;
+        public float flushMult = 2f;
+        public float quadsMult = 5f;
+        public float straightFlushMult = 10f;
+        public float royalFlushMult = 20f;
 
         private void Awake()
         {
