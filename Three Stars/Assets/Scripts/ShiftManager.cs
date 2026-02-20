@@ -22,7 +22,7 @@ public class ShiftManager : MonoBehaviour
     public static event System.Action OnGameOver;
 
     //utilities
-    private float[] possibleNextRoundScoreMults = new float[] { 1.1f, 1.1f, 1.2f, 1.2f, 1.2f, 1.2f, 1.2f, 1.3f, 1.3f, 1.4f, 1.5f };
+    private float[] possibleNextRoundScoreMults = new float[] { 1.1f, 1.1f, 1.2f, 1.2f, 1.2f, 1.2f, 1.2f, 1.3f, 1.4f, 1.5f };
 
     private void OnEnable()
     {
@@ -54,8 +54,8 @@ public class ShiftManager : MonoBehaviour
         if (score >= scoreThreshold)
         {
             if (debugMode) Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
-            ProgressionManager.Instance.prevScore = score;
             ProgressionManager.Instance.shiftNumber++;
+            UpdatePreviousScores();
             ResetShift();
         }
         if (plays == 0 && score < scoreThreshold)
@@ -67,19 +67,28 @@ public class ShiftManager : MonoBehaviour
     }
     public void ResetShift()
     {
+        score = 0;
         shiftNumber = ProgressionManager.Instance.shiftNumber;
         discards = ProgressionManager.Instance.discards;
         plays = ProgressionManager.Instance.plays;
         CalculateScoreThreshold();
     }
 
+    public void UpdatePreviousScores()
+    {
+        ProgressionManager.Instance.prevPrevPrevScore = ProgressionManager.Instance.prevPrevScore;
+        ProgressionManager.Instance.prevPrevScore = ProgressionManager.Instance.prevScore;
+        ProgressionManager.Instance.prevScore = score;
+        if (debugMode) Debug.Log($"Updated previous scores: prevScore: {ProgressionManager.Instance.prevScore}, prevPrevScore: {ProgressionManager.Instance.prevPrevScore}, prevPrevPrevScore: {ProgressionManager.Instance.prevPrevPrevScore}");
+    }
     public void CalculateScoreThreshold()
     {
         prevScore = ProgressionManager.Instance.prevScore;
         if (prevScore == 0)
         {
-            if (debugMode) Debug.Log("First shift, setting score threshold to 150");
+            if (debugMode) Debug.Log("First shift, setting score threshold to 100");
             scoreThreshold = 100;
+            return;
         }
         else
         {
@@ -101,7 +110,7 @@ public class ShiftManager : MonoBehaviour
                 float rawThreshold = prevScore * newScoreMult;
                 scoreThreshold = Mathf.RoundToInt(rawThreshold / 1000) * 1000; //nearest 1000
             }
-
+            if (debugMode) Debug.Log($"Shift: {shiftNumber}. New score threshold: {scoreThreshold}");
         }
     }
 

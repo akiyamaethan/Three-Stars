@@ -12,7 +12,10 @@ namespace ThreeStars
         public int plays = 3;
         public int discards = 3;
         public int shiftNumber = 0;
-        public int prevScore = 0; //used to determine next score threshold
+        //used to determine next score threshold
+        public int prevScore = 0;
+        public int prevPrevScore = 0;
+        public int prevPrevPrevScore = 0;
 
         // Card progression variables
         private Dictionary<string, int> playCounts = new Dictionary<string, int>();
