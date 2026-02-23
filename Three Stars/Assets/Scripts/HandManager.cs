@@ -1,8 +1,7 @@
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using ThreeStars;
-using Unity.VisualScripting;
 
 public class HandManager : MonoBehaviour
 {
@@ -28,6 +27,8 @@ public class HandManager : MonoBehaviour
         deckManager = FindAnyObjectByType<DeckManager>();
     }
 
+
+    // Hand Manipulation Methods
     public void AddCardToHand(CardInstance cardInstance)
     {
         GameObject newCard = Instantiate(cardPrefab, handTransform.position, Quaternion.identity, handTransform);
@@ -39,7 +40,30 @@ public class HandManager : MonoBehaviour
 
         UpdateCardPositions();
     }
+    public void DrawToFullHand()
+    {
+        while (cardsInHand.Count < ProgressionManager.Instance.handSize)
+        {
+            deckManager.DrawCard(this);
+        }
+    }
 
+    public void ClearHand()
+    {
+        foreach (GameObject card in cardsInHand)
+        {
+            Destroy(card);
+        }
+        foreach (GameObject card in discards)
+        {
+            Destroy(card);
+        }
+        cardsInHand.Clear();
+        selectedCards.Clear();
+        discards.Clear();
+    }
+
+    // Selection Methods
     public void SetSelected (CardMovement card)
     {
         if (selectedCards.Contains(card))
@@ -52,6 +76,7 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    // Updater
     private void UpdateCardPositions()
     {
         
@@ -70,6 +95,7 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    // Event Handlers
     public void OnPlayButtonPressed()
     {
         if (selectedCards.Count != 4)
@@ -120,26 +146,16 @@ public class HandManager : MonoBehaviour
         selectedCards.Clear();
         DrawToFullHand();
     }
-    public void DrawToFullHand()
+
+    public void SortByRank()
     {
-        while (cardsInHand.Count < ProgressionManager.Instance.handSize)
-        {
-            deckManager.DrawCard(this);
-        }
+        cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardRank).ToList();
+        UpdateCardPositions();
     }
 
-    public void ClearHand()
+    public void SortBySuit()
     {
-        foreach (GameObject card in cardsInHand)
-        {
-            Destroy(card);
-        }
-        foreach (GameObject card in discards)
-        {
-            Destroy(card);
-        }
-        cardsInHand.Clear();
-        selectedCards.Clear();
-        discards.Clear();
+        cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardSuit).ToList();
+        UpdateCardPositions();
     }
 }
