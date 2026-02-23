@@ -34,7 +34,7 @@ public class CardTableLoader : MonoBehaviour
             string bonus = $"x{values[3]}";
 
             CardRowUI row = Instantiate(cardRowPrefab, contentParent);
-            row.SetData(type, name, level.ToString(), bonus);
+            row.SetData(type, name, level, bonus);
         }
     }
 }
