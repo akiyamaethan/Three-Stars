@@ -44,12 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a62283136c7070443a545d1675cea7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMode: 1
   shiftNumber: 0
   discards: 0
   plays: 0
   scoreThreshold: 0
   score: 0
   prevScore: 0
+  deckManager: {fileID: 0}
+  handManager: {fileID: 0}
 --- !u!1 &2107174446837048779
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,6 +334,8 @@ MonoBehaviour:
   discards: 3
   shiftNumber: 0
   prevScore: 0
+  prevPrevScore: 0
+  prevPrevPrevScore: 0
   entreeSuitLevel: 1
   sideSuitLevel: 1
   vegSuitLevel: 1
@@ -348,13 +353,13 @@ MonoBehaviour:
   queenRankLevel: 1
   kingRankLevel: 1
   aceRankLevel: 1
-  pairMult: 1
-  twoPairMult: 1
-  rainbowMult: 1
-  tripsMult: 1
+  pairMult: 1.25
+  twoPairMult: 1.35
+  rainbowMult: 1.15
+  tripsMult: 1.45
   highCardMult: 1
-  straightMult: 1
-  flushMult: 1
-  quadsMult: 1
-  straightFlushMult: 1
-  royalFlushMult: 1
+  straightMult: 1.75
+  flushMult: 2
+  quadsMult: 5
+  straightFlushMult: 10
+  royalFlushMult: 20

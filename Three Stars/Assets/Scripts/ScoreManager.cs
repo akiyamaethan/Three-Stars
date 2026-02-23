@@ -44,7 +44,6 @@ public class ScoreManager : MonoBehaviour
 
         float multiplier = GetHandMult(rank, prog);
         int finalScore = Mathf.RoundToInt(totalPips * multiplier);
-        GameManager.Instance.PlayerScore += finalScore;
 
         prog.RegisterPlay(hand);
 

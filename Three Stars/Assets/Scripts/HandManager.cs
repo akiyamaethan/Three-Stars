@@ -18,17 +18,14 @@ public class HandManager : MonoBehaviour
     //Card Trackers
     public List<GameObject> cardsInHand = new List<GameObject>();
     public List<CardMovement> selectedCards = new List<CardMovement>();
-    
+    public List<GameObject> discards = new List<GameObject>();
+
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
 
-    void Start()
+    private void Awake()
     {
-        deckManager = FindObjectOfType<DeckManager>();
-        for (int i = 0; i < ProgressionManager.Instance.handSize; i++)
-        {
-            deckManager.DrawCard(this);
-        }
+        deckManager = FindAnyObjectByType<DeckManager>();
     }
 
     public void AddCardToHand(CardInstance cardInstance)
@@ -96,6 +93,7 @@ public class HandManager : MonoBehaviour
         //visually moves card to discard pile
         cardsToMove.ForEach(card =>
         {
+            discards.Add(card.gameObject);
             card.Play();
             cardsInHand.Remove(card.gameObject);
         });
@@ -115,17 +113,33 @@ public class HandManager : MonoBehaviour
         List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
         cardsToDiscard.ForEach(card =>
         {
+            discards.Add(card.gameObject);
             card.Discard();
             cardsInHand.Remove(card.gameObject);
         });
         selectedCards.Clear();
         DrawToFullHand();
     }
-    private void DrawToFullHand()
+    public void DrawToFullHand()
     {
         while (cardsInHand.Count < ProgressionManager.Instance.handSize)
         {
             deckManager.DrawCard(this);
         }
+    }
+
+    public void ClearHand()
+    {
+        foreach (GameObject card in cardsInHand)
+        {
+            Destroy(card);
+        }
+        foreach (GameObject card in discards)
+        {
+            Destroy(card);
+        }
+        cardsInHand.Clear();
+        selectedCards.Clear();
+        discards.Clear();
     }
 }

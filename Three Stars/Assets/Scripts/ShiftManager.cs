@@ -21,6 +21,10 @@ public class ShiftManager : MonoBehaviour
     //events
     public static event System.Action OnGameOver;
 
+    //managers
+    public DeckManager deckManager;
+    public HandManager handManager;
+
     //utilities
     private float[] possibleNextRoundScoreMults = new float[] { 1.1f, 1.1f, 1.2f, 1.2f, 1.2f, 1.2f, 1.2f, 1.3f, 1.4f, 1.5f };
 
@@ -44,6 +48,8 @@ public class ShiftManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        deckManager = FindAnyObjectByType<DeckManager>();
+        handManager = FindAnyObjectByType<HandManager>();
     }
 
     private void OnHandPlayed(List<CardInstance> hand, int handScore)
@@ -67,6 +73,9 @@ public class ShiftManager : MonoBehaviour
     }
     public void ResetShift()
     {
+        deckManager.Shuffle();
+        handManager.ClearHand();
+        handManager.DrawToFullHand();
         score = 0;
         shiftNumber = ProgressionManager.Instance.shiftNumber;
         discards = ProgressionManager.Instance.discards;

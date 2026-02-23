@@ -22,12 +22,11 @@ public class DeckManager : MonoBehaviour
     }
     public void DrawCard(HandManager handManager)
     {
-        if (deck.Count == 0)
+        if (currentCardIndex >= deck.Count)
         {
             Debug.LogWarning("Deck is empty! Cannot draw a card.");
             return;
         }
-            
 
         CardInstance cardToDraw = deck[currentCardIndex];
         handManager.AddCardToHand(cardToDraw);
@@ -48,6 +47,7 @@ public class DeckManager : MonoBehaviour
             deck[k] = deck[n];
             deck[n] = value;
         }
+        currentCardIndex = 0;
     }
 
 }

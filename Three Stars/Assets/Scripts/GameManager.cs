@@ -26,6 +26,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        shiftManager.ResetShift(); //Starts the game
+    }
+
     private void InitializeManagers()
     {
         deckManager = GetComponentInChildren<DeckManager>();
@@ -88,14 +93,6 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
             }
         }
-        shiftManager.ResetShift(); // Initializes shift manager values
-    }
-    
-    private int _playerScore;
-    public int PlayerScore
-    {
-        get { return _playerScore; }
-        set { _playerScore = value; }
     }
 }
 
