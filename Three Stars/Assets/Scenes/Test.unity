@@ -2218,8 +2218,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.00000667572, y: -50}
-  m_SizeDelta: {x: 448.111, y: 100}
+  m_AnchoredPosition: {x: -0.000011444092, y: -50}
+  m_SizeDelta: {x: 601.195, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &586640404
 GameObject:
@@ -2293,8 +2293,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -25}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 159.78, y: -25}
+  m_SizeDelta: {x: 319.559, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &595247487
 MonoBehaviour:
@@ -9365,7 +9365,7 @@ GameObject:
   - component: {fileID: 2051114775}
   - component: {fileID: 2051114776}
   m_Layer: 0
-  m_Name: cement-texture
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

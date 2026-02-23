@@ -39,6 +39,7 @@ public class CardDisplay : MonoBehaviour
         cardBackground.sprite = cardData.cardBackground;
         foodImage.sprite = cardData.foodImage;
         rankImage.sprite = cardData.rankImage;
+        rankImage.color = Color.black;
         suitImage.sprite = cardData.suitImage;
         suitImage.color = Color.black;
         suitText.text = cardData.cardSuit.ToString();
