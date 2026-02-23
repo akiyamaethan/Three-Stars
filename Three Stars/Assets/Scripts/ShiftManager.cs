@@ -20,6 +20,7 @@ public class ShiftManager : MonoBehaviour
 
     //events
     public static event System.Action OnGameOver;
+    public static event System.Action OnUIUpdate;
 
     //managers
     public DeckManager deckManager;
@@ -52,6 +53,10 @@ public class ShiftManager : MonoBehaviour
         handManager = FindAnyObjectByType<HandManager>();
     }
 
+    private void RefreshUI()
+    {
+        OnUIUpdate?.Invoke();
+    }
     private void OnHandPlayed(List<CardInstance> hand, int handScore)
     {
         plays--;
@@ -70,6 +75,7 @@ public class ShiftManager : MonoBehaviour
             if (debugMode) Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
         }
         if (debugMode) Debug.Log($"Hand played! Remaining plays: {plays} / {ProgressionManager.Instance.plays}");
+        RefreshUI();
     }
     public void ResetShift()
     {
@@ -81,6 +87,7 @@ public class ShiftManager : MonoBehaviour
         discards = ProgressionManager.Instance.discards;
         plays = ProgressionManager.Instance.plays;
         CalculateScoreThreshold();
+        RefreshUI();
     }
 
     public void UpdatePreviousScores()
@@ -127,5 +134,6 @@ public class ShiftManager : MonoBehaviour
     {
         discards--;
         if (debugMode) Debug.Log($"Discard triggered! Total discards: {discards} / {ProgressionManager.Instance.discards}");
+        RefreshUI();
     }
 }
