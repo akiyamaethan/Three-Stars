@@ -15,7 +15,7 @@ MonoBehaviour:
   cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
   foodImage: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   rankImage: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  suitImage: {fileID: 21300000, guid: 472d51c476e21d844a36ed8de3c23cd4, type: 3}
+  suitImage: {fileID: 21300000, guid: 006b6f328a3ad8843a7064dd03baffaa, type: 3}
   cardText: text
   cardSuit: 0
   cardRank: 8
