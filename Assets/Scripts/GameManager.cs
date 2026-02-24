@@ -1,12 +1,14 @@
+// Assets/Scripts/GameManager.cs
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Hand Settings")]
     [SerializeField] private int handSize = 7;
 
-    [Header("Round Settings")]
+    [Header("Round Settings (defaults if RunManager missing)")]
     [SerializeField] private int startingHands = 5;
     [SerializeField] private int startingDiscards = 3;
     [SerializeField] private int targetScore = 100;
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     [Header("Selection")]
     [SerializeField] private SelectionManager selectionManager;
 
+    [Header("Round Over")]
     [SerializeField] private RoundOverUI roundOverUI;
 
     private Deck deck;
@@ -42,10 +45,29 @@ public class GameManager : MonoBehaviour
 
     // For UI cash
     private int cash;
+
     public int HandsRemaining => handsRemaining;
     public int DiscardsRemaining => discardsRemaining;
+
     private void Start()
     {
+        // --- NEW: pull settings from RunManager (MenuScene) if it exists ---
+        if (RunManager.Instance != null)
+        {
+            RunManager.Instance.GetCurrentRoundSettings(out startingHands, out startingDiscards, out targetScore);
+
+            Debug.Log(
+                $"Loaded round settings from RunManager: " +
+                $"difficulty={RunManager.Instance.SelectedDifficulty}, " +
+                $"round={RunManager.Instance.RoundNumber}, " +
+                $"hands={startingHands}, discards={startingDiscards}, target={targetScore}");
+        }
+        else
+        {
+            Debug.Log("RunManager not found. Using default round settings from GameManager Inspector.");
+        }
+        // ---------------------------------------------------------------
+
         // Init round stats
         handsRemaining = startingHands;
         discardsRemaining = startingDiscards;
@@ -80,7 +102,6 @@ public class GameManager : MonoBehaviour
         {
             selectionManager.OnPlayedCards += CachePlayedCardsForScoring;
             selectionManager.OnPlayedSlotIndices += HandlePlayedSlots;
-
             selectionManager.OnDiscardSlotIndices += HandleDiscardSlots;
         }
         else
@@ -142,7 +163,18 @@ public class GameManager : MonoBehaviour
                 roundOverUI.Show(win, currentScore, targetScore);
         }
     }
+    public void ContinueAfterWin()
+    {
+        if (RunManager.Instance != null)
+            RunManager.Instance.NextRound();
 
+        SceneManager.LoadScene("gamescene");
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MenuScene");
+    }
     public void RestartRound()
     {
         // Reset stats

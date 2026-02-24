@@ -9,12 +9,16 @@ public class StatsUI : MonoBehaviour
     [SerializeField] private TMP_Text yourScoreValue;
 
     [Header("Score x Mult")]
-    [SerializeField] private TMP_Text scoreValue;   // left number
-    [SerializeField] private TMP_Text multValue;    // right number (just the multiplier number)
+    [SerializeField] private TMP_Text scoreValue;
+    [SerializeField] private TMP_Text multValue;
 
     [Header("Mini Stats")]
     [SerializeField] private TMP_Text discardsValue;
     [SerializeField] private TMP_Text handsValue;
+
+    [Header("Blind Info (NEW)")]
+    [SerializeField] private TMP_Text blindValue;
+    [SerializeField] private TMP_Text difficultyValue;
 
     public void Refresh(
         int targetScore,
@@ -29,11 +33,19 @@ public class StatsUI : MonoBehaviour
         if (cashValue != null) cashValue.text = $"${cash}";
         if (yourScoreValue != null) yourScoreValue.text = score.ToString();
 
-        // Display like: "123 x 4"
         if (scoreValue != null) scoreValue.text = scoreBase.ToString();
         if (multValue != null) multValue.text = mult.ToString();
 
         if (discardsValue != null) discardsValue.text = discardsRemaining.ToString();
         if (handsValue != null) handsValue.text = handsRemaining.ToString();
+
+        if (RunManager.Instance != null)
+        {
+            if (blindValue != null)
+                blindValue.text = RunManager.Instance.RoundNumber.ToString();
+
+            if (difficultyValue != null)
+                difficultyValue.text = RunManager.Instance.SelectedDifficulty.ToString();
+        }
     }
 }
