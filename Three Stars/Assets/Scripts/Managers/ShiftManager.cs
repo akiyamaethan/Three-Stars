@@ -58,25 +58,39 @@ public class ShiftManager : MonoBehaviour
         OnUIUpdate?.Invoke();
     }
     private void OnHandPlayed(List<CardInstance> hand, int handScore)
+{
+    plays--;
+    score += handScore;
+
+    if (debugMode)
+        Debug.Log($"Current score: {score} / {scoreThreshold}");
+
+    if (score >= scoreThreshold)
     {
-        plays--;
-        score += handScore;
-        if (debugMode) Debug.Log($"Current score: {score} / {scoreThreshold}");
-        if (score >= scoreThreshold)
-        {
-            if (debugMode) Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
-            ProgressionManager.Instance.shiftNumber++;
-            UpdatePreviousScores();
-            ResetShift();
-        }
-        if (plays == 0 && score < scoreThreshold)
-        {
-            OnGameOver?.Invoke();
-            if (debugMode) Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
-        }
-        if (debugMode) Debug.Log($"Hand played! Remaining plays: {plays} / {ProgressionManager.Instance.plays}");
-        RefreshUI();
+        if (debugMode)
+            Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
+
+        // 1) Add overflow to wallet
+        ShopManager.Instance.AddOverflowFromShift(score, scoreThreshold, cleared: true);
+
+        // 2) Open shop
+        ShopManager.Instance.NotifyShopAvailable();
+
+        // 3) Existing progression
+        ProgressionManager.Instance.shiftNumber++;
+        UpdatePreviousScores();
+        ResetShift();
     }
+
+    if (plays == 0 && score < scoreThreshold)
+    {
+        OnGameOver?.Invoke();
+        if (debugMode)
+            Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
+    }
+
+    RefreshUI();
+}
     public void ResetShift()
     {
         deckManager.Shuffle();

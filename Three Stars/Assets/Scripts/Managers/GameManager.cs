@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public ScoreManager scoreManager { get; private set; }
     public ShiftManager shiftManager { get; private set; }
     public static GameManager Instance { get; private set; }
+    public ShopManager shopManager { get; private set; }
 
     public RectTransform DiscardPileTransform;
 
@@ -93,6 +94,21 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
             }
         }
+                shopManager = GetComponentInChildren<ShopManager>();
+        if (shopManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Shop Manager");
+            if (prefab != null)
+            {
+                GameObject shopManagerObj = Instantiate(prefab, transform);
+                shopManager = shopManagerObj.GetComponent<ShopManager>();
+            }
+            else
+            {
+                Debug.LogError("Shop Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+        
     }
 }
 
