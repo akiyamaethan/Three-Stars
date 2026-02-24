@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
   foodImage: {fileID: 0}
-  rankImage: {fileID: 0}
-  suitImage: {fileID: 21300000, guid: 2fe692adec1e28b469d42bbd14b87b67, type: 3}
+  rankImage: {fileID: 21300000, guid: 6549556a5d4726942bb6b939e4e61c53, type: 3}
+  suitImage: {fileID: 21300000, guid: c619eee10b200134484274f6d5e1c61a, type: 3}
   cardText: 
   cardSuit: 1
   cardRank: 8

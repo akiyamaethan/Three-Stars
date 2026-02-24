@@ -49,6 +49,25 @@ namespace ThreeStars
         public float straightFlushMult = 10f;
         public float royalFlushMult = 20f;
 
+        // Card upgrade variables
+        public int EntreeBonusPips = 0;
+        public int SideBonusPips = 0;
+        public int VegBonusPips = 0;
+        public int SauceBonusPips = 0;
+        public int TwoBonusPips = 0;
+        public int ThreeBonusPips = 0;
+        public int FourBonusPips = 0;
+        public int FiveBonusPips = 0;
+        public int SixBonusPips = 0;
+        public int SevenBonusPips = 0;
+        public int EightBonusPips = 0;
+        public int NineBonusPips = 0;
+        public int TenBonusPips = 0;
+        public int JackBonusPips = 0;
+        public int QueenBonusPips = 0;
+        public int KingBonusPips = 0;
+        public int AceBonusPips = 0;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -62,6 +81,108 @@ namespace ThreeStars
             }
         }
 
+        // Upgrade Helper
+        public void ApplyUpgrade(UpgradeCard upgrade)
+        {
+            foreach (UpgradeCategory category in upgrade.upgradeCategories)
+            {
+                switch (category)
+                {
+                    case UpgradeCategory.handSize:
+                        handSize += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.plays:
+                        plays += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.discards:
+                        discards += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.AceBonusPips:
+                        AceBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.KingBonusPips:
+                        KingBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.QueenBonusPips:
+                        QueenBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.JackBonusPips:
+                        JackBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.TenBonusPips:
+                        TenBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.NineBonusPips:
+                        NineBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.EightBonusPips:
+                        EightBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.SevenBonusPips:
+                        SevenBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.SixBonusPips:  
+                        SixBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.FiveBonusPips:
+                        FiveBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.FourBonusPips:
+                        FourBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.ThreeBonusPips:
+                        ThreeBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.TwoBonusPips:
+                        TwoBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.EntreeBonusPips:
+                        EntreeBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.SideBonusPips:
+                        SideBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.VegBonusPips:
+                        VegBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.SauceBonusPips:
+                        SauceBonusPips += (int)upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.pairMult:
+                        pairMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.twoPairMult:
+                        twoPairMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.rainbowMult:
+                        rainbowMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.tripsMult:
+                        tripsMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.highCardMult:
+                        highCardMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.straightMult:
+                        straightMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.flushMult:
+                        flushMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.quadsMult:
+                        quadsMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.straightFlushMult:
+                        straightFlushMult += upgrade.effectMagnitude;
+                        break;
+                    case UpgradeCategory.royalFlushMult:
+                        royalFlushMult += upgrade.effectMagnitude;
+                        break;
+                }
+            }
+        }
+
+        // Helpers for registering plays and leveling up suits/ranks
         public void RegisterPlay(List<CardInstance> hand)
         {
             HashSet<PlayingCard.CardSuit> uniqueSuits = new HashSet<PlayingCard.CardSuit>();
@@ -121,9 +242,18 @@ namespace ThreeStars
                 case PlayingCard.CardSuit.Sauce: sauceSuitLevel = newLevel; break;
             }
         }
-        public int GetSuitLevelBonusPips(PlayingCard.CardSuit suit)
+        public int GetSuitBonusPips(PlayingCard.CardSuit suit)
         {
-            return GetSuitLevel(suit) - 1;
+            var result = GetSuitLevel(suit) - 1;
+            result += suit switch
+            {
+                PlayingCard.CardSuit.Entree => EntreeBonusPips,
+                PlayingCard.CardSuit.Side => SideBonusPips,
+                PlayingCard.CardSuit.Vegetable => VegBonusPips,
+                PlayingCard.CardSuit.Sauce => SauceBonusPips,
+                _ => 0
+            };
+            return result;
         }
 
         public int GetSuitLevel(PlayingCard.CardSuit suit)
@@ -159,9 +289,27 @@ namespace ThreeStars
             }
         }
 
-        public int GetRankLevelBonusPips(PlayingCard.CardRank rank)
+        public int GetRankBonusPips(PlayingCard.CardRank rank)
         {
-            return GetRankLevel(rank) - 1;
+            var result = GetRankLevel(rank) - 1;
+            result += rank switch
+            {
+                PlayingCard.CardRank.Two => TwoBonusPips,
+                PlayingCard.CardRank.Three => ThreeBonusPips,
+                PlayingCard.CardRank.Four => FourBonusPips,
+                PlayingCard.CardRank.Five => FiveBonusPips,
+                PlayingCard.CardRank.Six => SixBonusPips,
+                PlayingCard.CardRank.Seven => SevenBonusPips,
+                PlayingCard.CardRank.Eight => EightBonusPips,
+                PlayingCard.CardRank.Nine => NineBonusPips,
+                PlayingCard.CardRank.Ten => TenBonusPips,
+                PlayingCard.CardRank.Jack => JackBonusPips,
+                PlayingCard.CardRank.Queen => QueenBonusPips,
+                PlayingCard.CardRank.King => KingBonusPips,
+                PlayingCard.CardRank.Ace => AceBonusPips,
+                _ => 0
+            };
+            return result;
         }
         public int GetRankLevel(PlayingCard.CardRank rank)
         {

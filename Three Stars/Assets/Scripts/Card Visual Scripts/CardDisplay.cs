@@ -19,7 +19,7 @@ public class CardDisplay : MonoBehaviour
     public TMP_Text rankText;
     public TMP_Text suitText;
 
-    private Color[] suitColors = new Color[]
+    public Color[] suitColors = new Color[]
     {
         new Color(1f, 0.5f, 0.5f), // Light Red
         new Color(0.5f, 0.5f, 1f), // Light Blue
@@ -39,7 +39,9 @@ public class CardDisplay : MonoBehaviour
         cardBackground.sprite = cardData.cardBackground;
         foodImage.sprite = cardData.foodImage;
         rankImage.sprite = cardData.rankImage;
+        rankImage.color = Color.black;
         suitImage.sprite = cardData.suitImage;
+        suitImage.color = Color.black;
         suitText.text = cardData.cardSuit.ToString();
         rankText.text = cardData.cardRank.ToString();
         cardText.text = cardData.cardText;
