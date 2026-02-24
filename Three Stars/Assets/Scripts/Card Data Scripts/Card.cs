@@ -4,6 +4,45 @@ using UnityEngine;
 
 namespace ThreeStars
 {
+    public enum UpgradeCategory
+    {
+        pairMult,
+        twoPairMult,
+        rainbowMult,
+        tripsMult,
+        highCardMult,
+        straightMult,
+        flushMult,
+        quadsMult,
+        straightFlushMult,
+        royalFlushMult,
+        EntreeBonusPips,
+        SideBonusPips,
+        VegBonusPips,
+        SauceBonusPips,
+        TwoBonusPips,
+        ThreeBonusPips,
+        FourBonusPips,
+        FiveBonusPips,
+        SixBonusPips,
+        SevenBonusPips,
+        EightBonusPips,
+        NineBonusPips,
+        TenBonusPips,
+        JackBonusPips,
+        QueenBonusPips,
+        KingBonusPips,
+        AceBonusPips,
+        handSize,
+        plays,
+        discards
+    }
+
+    public enum CardRarity
+    {
+        Common, Uncommon, Rare, Legendary
+    }
+
     [CreateAssetMenu(fileName = "New Playing Card", menuName = "Playing Card")]
     public class PlayingCard : ScriptableObject
     //Three types of card: PlayingCard, ChefCard, and UpgradeCard
@@ -50,6 +89,8 @@ namespace ThreeStars
         public Sprite cardImage;
         public string cardText;
         public string description;
+        public string effect;
+        public CardRarity rarity;
     }
 
     [CreateAssetMenu(fileName = "New Upgrade Card", menuName = "Upgrade Card")]
@@ -60,5 +101,8 @@ namespace ThreeStars
         public Sprite cardImage;
         public string cardText;
         public string description;
+        public List<UpgradeCategory> upgradeCategories;
+        public float effectMagnitude;
+        public CardRarity rarity;
     }
 }

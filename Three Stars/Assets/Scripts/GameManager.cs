@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,7 +11,20 @@ public class GameManager : MonoBehaviour
     public ShiftManager shiftManager { get; private set; }
     public static GameManager Instance { get; private set; }
 
+    public ShopManager shopManager;
+
     public RectTransform DiscardPileTransform;
+    public enum GameState
+    {
+        MainMenu,
+        Playing,
+        InShop,
+        GameOver
+    }
+
+    public GameState currentState;
+    public Canvas gameplayCanvas;
+    public Canvas shopCanvas;
 
     private void Awake()
     {
@@ -23,13 +37,22 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeManagers();
+            SwitchToState(GameState.Playing);
         }
     }
-
     private void Start()
     {
         shiftManager.ResetShift(); //Starts the game
     }
+
+    public void SwitchToState(GameState state)
+    {
+        currentState = state;
+        gameplayCanvas.gameObject.SetActive(state == GameState.Playing);
+        shopCanvas.gameObject.SetActive(state == GameState.InShop);
+        shopManager.OpenShop();
+    }
+
 
     private void InitializeManagers()
     {
@@ -91,6 +114,21 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
+            }
+        }
+
+        shopManager = GetComponentInChildren<ShopManager>();
+        if (shopManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Shop Manager");
+            if (prefab != null)
+            {
+                GameObject shopManagerObj = Instantiate(prefab, transform);
+                shopManager = shopManagerObj.GetComponent<ShopManager>();
+            }
+            else
+            {
+                Debug.LogError("Shop Manager prefab not found in Resources/Prefabs.");
             }
         }
     }

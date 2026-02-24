@@ -37,8 +37,8 @@ public class ScoreManager : MonoBehaviour
         foreach (var card in hand)
         {
             float basePips = GetBasePips(card.cardData.cardRank);
-            basePips += prog.GetSuitLevelBonusPips(card.cardData.cardSuit);
-            basePips += prog.GetRankLevelBonusPips(card.cardData.cardRank);
+            basePips += prog.GetSuitBonusPips(card.cardData.cardSuit);
+            basePips += prog.GetRankBonusPips(card.cardData.cardRank);
             totalPips += basePips;
         }
 
