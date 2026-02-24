@@ -30,7 +30,7 @@ public class CardModalDisplay : MonoBehaviour
 
     public void BuildAndRefresh()
     {
-        var pm = ProgressionManager.Instance;
+        var pm = GameManager.Instance.progressionManager;
         if (pm == null)
         {
             Debug.LogError("CardModalDisplay: ProgressionManager.Instance is NULL. Ensure ProgressionManager exists before opening the modal.");

@@ -42,7 +42,19 @@ public class HandManager : MonoBehaviour
     }
     public void DrawToFullHand()
     {
-        while (cardsInHand.Count < ProgressionManager.Instance.handSize)
+        if (GameManager.Instance == null || GameManager.Instance.progressionManager == null)
+        {
+            Debug.LogWarning("HandManager: Cannot draw cards, ProgressionManager is not initialized.");
+            return;
+        }
+
+        if (deckManager == null)
+        {
+            Debug.LogWarning("HandManager: deckManager is null!");
+            return;
+        }
+
+        while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize)
         {
             deckManager.DrawCard(this);
         }
@@ -100,8 +112,15 @@ public class HandManager : MonoBehaviour
     {
         if (selectedCards.Count != 4)
             return;
-        if (ShiftManager.Instance.plays < 1)
+        if (GameManager.Instance.shiftManager.plays < 1)
             return;
+
+        // Cleanup previous discards first
+        foreach (GameObject oldCard in discards)
+        {
+            if (oldCard != null) Destroy(oldCard);
+        }
+        discards.Clear();
 
         List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
         List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject)); //this is the list of cards on the canvas
@@ -110,7 +129,7 @@ public class HandManager : MonoBehaviour
             cardsToScore.Add(card.GetComponent<CardDisplay>().cardInstance);
         }
         HandEvaluator.HandRank handRank;
-        int finalScore = ScoreManager.Instance.CalculateScore(cardsToScore, out handRank);
+        int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
 
         OnHandPlayed?.Invoke(cardsToScore, finalScore);
 
@@ -133,9 +152,17 @@ public class HandManager : MonoBehaviour
     {
         if (selectedCards.Count > 4 || selectedCards.Count == 0)
             return;
-        if (ShiftManager.Instance.discards < 1)
+        if (GameManager.Instance.shiftManager.discards < 1)
             return;
-        ShiftManager.Instance.TriggerDiscard();
+
+        // Cleanup previous discards first
+        foreach (GameObject oldCard in discards)
+        {
+            if (oldCard != null) Destroy(oldCard);
+        }
+        discards.Clear();
+
+        GameManager.Instance.shiftManager.TriggerDiscard();
         List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
         cardsToDiscard.ForEach(card =>
         {

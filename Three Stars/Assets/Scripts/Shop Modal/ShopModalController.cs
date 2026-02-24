@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShopModalController : MonoBehaviour
 {
@@ -59,16 +60,45 @@ public class ShopModalController : MonoBehaviour
         if (shopModalRoot == null) return;
         shopModalRoot.SetActive(true);
 
+        // Fix squashed layout: force root to be full screen
+        if (shopModalRoot.transform is RectTransform rootRT)
+        {
+            rootRT.anchorMin = Vector2.zero;
+            rootRT.anchorMax = Vector2.one;
+            rootRT.offsetMin = Vector2.zero;
+            rootRT.offsetMax = Vector2.zero;
+        }
+
         BuildIfNeeded();
         RefreshAll();
 
-        // Optional: pause input later (we’ll do next)
+        // Force rebuild of the entire hierarchy to fix "skinny" columns
+        Canvas.ForceUpdateCanvases();
+        if (contentParent is RectTransform rt)
+        {
+            // Ensure the content parent itself is stretching to its parent's width
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.offsetMin = new Vector2(0, rt.offsetMin.y);
+            rt.offsetMax = new Vector2(0, rt.offsetMax.y);
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
     }
 
     public void Close()
     {
         if (shopModalRoot == null) return;
         shopModalRoot.SetActive(false);
+    }
+
+    public void CloseAndContinue()
+    {
+        Close();
+        if (GameManager.Instance != null && GameManager.Instance.shiftManager != null)
+        {
+            GameManager.Instance.shiftManager.StartNextShift();
+        }
     }
 
     private void BuildIfNeeded()

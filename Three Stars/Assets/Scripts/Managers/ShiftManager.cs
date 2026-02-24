@@ -5,8 +5,6 @@ using ThreeStars;
 
 public class ShiftManager : MonoBehaviour
 {
-    public static ShiftManager Instance { get; private set; }
-
     //debug
     public bool debugMode = true;
 
@@ -40,15 +38,6 @@ public class ShiftManager : MonoBehaviour
     }
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
         deckManager = FindAnyObjectByType<DeckManager>();
         handManager = FindAnyObjectByType<HandManager>();
     }
@@ -65,62 +54,69 @@ public class ShiftManager : MonoBehaviour
     if (debugMode)
         Debug.Log($"Current score: {score} / {scoreThreshold}");
 
-    if (score >= scoreThreshold)
-    {
-        if (debugMode) Debug.Log($"Current score: {score} / {scoreThreshold}");
         if (score >= scoreThreshold)
         {
             if (debugMode) Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
-            ProgressionManager.Instance.shiftNumber++;
+            GameManager.Instance.progressionManager.shiftNumber++;
             UpdatePreviousScores();
-                    // 1) Add overflow to wallet
-        ShopManager.Instance.AddOverflowFromShift(score, scoreThreshold, cleared: true);
+            // 1) Add overflow to wallet
+            ShopManager.Instance.AddOverflowFromShift(score, scoreThreshold, cleared: true);
 
-        // 2) Open shop
-        ShopManager.Instance.NotifyShopAvailable();
-            ResetShift();
+            // 2) Open shop and switch state
+            GameManager.Instance.SwitchToState(GameManager.GameState.InShop);
+            ShopManager.Instance.NotifyShopAvailable();
         }
-        if (plays == 0 && score < scoreThreshold)
+        else if (plays == 0)
         {
             OnGameOver?.Invoke();
+            GameManager.Instance.SwitchToState(GameManager.GameState.GameOver);
             if (debugMode) Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
         }
-        if (debugMode) Debug.Log($"Hand played! Remaining plays: {plays} / {ProgressionManager.Instance.plays}");
+        
         RefreshUI();
     }
 
-    if (plays == 0 && score < scoreThreshold)
+    public void StartNextShift()
     {
-        OnGameOver?.Invoke();
-        if (debugMode)
-            Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
+        GameManager.Instance.SwitchToState(GameManager.GameState.Playing);
+        ResetShift();
     }
 
-    RefreshUI();
-}
     public void ResetShift()
     {
-        deckManager.Shuffle();
-        handManager.ClearHand();
-        handManager.DrawToFullHand();
+        if (deckManager != null) deckManager.Shuffle();
+        if (handManager != null)
+        {
+            handManager.ClearHand();
+            handManager.DrawToFullHand();
+        }
+        else
+        {
+            Debug.LogWarning("ShiftManager: handManager is null in ResetShift!");
+        }
+        
         score = 0;
-        shiftNumber = ProgressionManager.Instance.shiftNumber;
-        discards = ProgressionManager.Instance.discards;
-        plays = ProgressionManager.Instance.plays;
+        if (GameManager.Instance != null && GameManager.Instance.progressionManager != null)
+        {
+            shiftNumber = GameManager.Instance.progressionManager.shiftNumber;
+            discards = GameManager.Instance.progressionManager.discards;
+            plays = GameManager.Instance.progressionManager.plays;
+        }
+        
         CalculateScoreThreshold();
         RefreshUI();
     }
 
     public void UpdatePreviousScores()
     {
-        ProgressionManager.Instance.prevPrevPrevScore = ProgressionManager.Instance.prevPrevScore;
-        ProgressionManager.Instance.prevPrevScore = ProgressionManager.Instance.prevScore;
-        ProgressionManager.Instance.prevScore = score;
-        if (debugMode) Debug.Log($"Updated previous scores: prevScore: {ProgressionManager.Instance.prevScore}, prevPrevScore: {ProgressionManager.Instance.prevPrevScore}, prevPrevPrevScore: {ProgressionManager.Instance.prevPrevPrevScore}");
+        GameManager.Instance.progressionManager.prevPrevPrevScore = GameManager.Instance.progressionManager.prevPrevScore;
+        GameManager.Instance.progressionManager.prevPrevScore = GameManager.Instance.progressionManager.prevScore;
+        GameManager.Instance.progressionManager.prevScore = score;
+        if (debugMode) Debug.Log($"Updated previous scores: prevScore: {GameManager.Instance.progressionManager.prevScore}, prevPrevScore: {GameManager.Instance.progressionManager.prevPrevScore}, prevPrevPrevScore: {GameManager.Instance.progressionManager.prevPrevPrevScore}");
     }
     public void CalculateScoreThreshold()
     {
-        prevScore = ProgressionManager.Instance.prevScore;
+        prevScore = GameManager.Instance.progressionManager.prevScore;
         if (prevScore == 0)
         {
             if (debugMode) Debug.Log("First shift, setting score threshold to 100");
@@ -154,7 +150,7 @@ public class ShiftManager : MonoBehaviour
     public void TriggerDiscard()
     {
         discards--;
-        if (debugMode) Debug.Log($"Discard triggered! Total discards: {discards} / {ProgressionManager.Instance.discards}");
+        if (debugMode) Debug.Log($"Discard triggered! Total discards: {discards} / {GameManager.Instance.progressionManager.discards}");
         RefreshUI();
     }
 }

@@ -27,20 +27,34 @@ public TextMeshProUGUI walletText;
         ShopManager.OnWalletChanged -= HandleWalletChanged;
     }
     private void Start()
-{
-    HandleWalletChanged(ShopManager.Instance != null ? ShopManager.Instance.Wallet : 0);
-}
-private void HandleWalletChanged(int amount)
-{
-    walletText.text = $"Wallet: {amount}";
-}
+    {
+        if (ShopManager.Instance != null)
+        {
+            HandleWalletChanged(ShopManager.Instance.Wallet);
+        }
+        else
+        {
+            HandleWalletChanged(0);
+        }
+    }
+
+    private void HandleWalletChanged(int amount)
+    {
+        if (walletText != null)
+        {
+            walletText.text = $"Wallet: {amount}";
+        }
+    }
+
     private void UpdateAllUI()
     {
-        var shiftManager = ShiftManager.Instance;
-        scoreText.text = $"Current Score: {shiftManager.score}";
-        scoreThresholdText.text = $"Goal: {shiftManager.scoreThreshold}";
-        playsText.text = $"Plays: {shiftManager.plays}";
-        discardsText.text = $"Discards: {shiftManager.discards}";
-        shiftNumberText.text = $"Shift: {shiftManager.shiftNumber + 1}";
+        if (GameManager.Instance == null || GameManager.Instance.shiftManager == null) return;
+
+        var shiftManager = GameManager.Instance.shiftManager;
+        if (scoreText != null) scoreText.text = $"Current Score: {shiftManager.score}";
+        if (scoreThresholdText != null) scoreThresholdText.text = $"Goal: {shiftManager.scoreThreshold}";
+        if (playsText != null) playsText.text = $"Plays: {shiftManager.plays}";
+        if (discardsText != null) discardsText.text = $"Discards: {shiftManager.discards}";
+        if (shiftNumberText != null) shiftNumberText.text = $"Shift: {shiftManager.shiftNumber + 1}";
     }
 }

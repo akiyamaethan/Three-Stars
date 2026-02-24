@@ -12,6 +12,11 @@ public class CardModalController : MonoBehaviour
 
     void Start()
     {
+        if (cardModalRoot == null)
+        {
+            cardModalRoot = GameObject.Find("CardModalRoot");
+        }
+
         if (cardModalRoot != null)
         {
             cardModalRoot.SetActive(false);
@@ -27,8 +32,9 @@ public class CardModalController : MonoBehaviour
         }
     }
 
-    private void ToggleModal()
+    public void ToggleModal()
     {
+        if (cardModalRoot == null) return;
         isOpen = !isOpen;
         cardModalRoot.SetActive(isOpen);
     }

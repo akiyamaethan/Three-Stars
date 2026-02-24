@@ -5,8 +5,6 @@ namespace ThreeStars
 {
     public class ProgressionManager : MonoBehaviour
     {
-        public static ProgressionManager Instance { get; private set; }
-
         // Player variables
         public int handSize = 7;
         public int plays = 3;
@@ -67,19 +65,6 @@ namespace ThreeStars
         public int QueenBonusPips = 0;
         public int KingBonusPips = 0;
         public int AceBonusPips = 0;
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-        }
 
         // Upgrade Helper
         public void ApplyUpgrade(UpgradeCard upgrade)

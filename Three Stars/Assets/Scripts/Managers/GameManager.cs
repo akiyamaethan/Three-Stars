@@ -4,17 +4,17 @@ using System.Transactions;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
-{
+{   
+    //Singleton setup
+    public static GameManager Instance { get; private set; }
+    //Other managers
     public DeckManager deckManager { get; private set; }
     public ThreeStars.ProgressionManager progressionManager { get; private set; }
     public ScoreManager scoreManager { get; private set; }
     public ShiftManager shiftManager { get; private set; }
-    public static GameManager Instance { get; private set; }
     public ShopManager shopManager { get; private set; }
 
-    public ShopManager shopManager;
-
-    public RectTransform DiscardPileTransform;
+    //Game states
     public enum GameState
     {
         MainMenu,
@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
         GameOver
     }
 
+    // UI References
+    public RectTransform DiscardPileTransform;
     public GameState currentState;
     public Canvas gameplayCanvas;
     public Canvas shopCanvas;
@@ -43,22 +45,24 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        shiftManager.ResetShift(); //Starts the game
+        if (Instance == this && shiftManager != null)
+        {
+            shiftManager.ResetShift(); //Starts the game
+        }
     }
 
     public void SwitchToState(GameState state)
     {
         currentState = state;
-        gameplayCanvas.gameObject.SetActive(state == GameState.Playing);
-        shopCanvas.gameObject.SetActive(state == GameState.InShop);
-        shopManager.OpenShop();
+        if (gameplayCanvas != null) gameplayCanvas.gameObject.SetActive(state == GameState.Playing);
+        if (shopCanvas != null) shopCanvas.gameObject.SetActive(state == GameState.InShop);
     }
 
 
     private void InitializeManagers()
     {
+        // Use GetComponentInChildren first, then fallback to Resources/Instantiate
         deckManager = GetComponentInChildren<DeckManager>();
-
         if (deckManager == null)
         {
             GameObject prefab = Resources.Load<GameObject>("Prefabs/Deck Manager");
@@ -66,10 +70,6 @@ public class GameManager : MonoBehaviour
             {
                 GameObject deckManagerObj = Instantiate(prefab, transform);
                 deckManager = deckManagerObj.GetComponent<DeckManager>();
-            }
-            else
-            {
-                Debug.LogError("Deck Manager prefab not found in Resources/Prefabs.");
             }
         }
 
@@ -82,10 +82,6 @@ public class GameManager : MonoBehaviour
                 GameObject progressionManagerObj = Instantiate(prefab, transform);
                 progressionManager = progressionManagerObj.GetComponent<ThreeStars.ProgressionManager>();
             }
-            else
-            {
-                Debug.LogError("Progression Manager prefab not found in Resources/Prefabs.");
-            }
         }
 
         scoreManager = GetComponentInChildren<ScoreManager>();
@@ -96,10 +92,6 @@ public class GameManager : MonoBehaviour
             {
                 GameObject scoreManagerObj = Instantiate(prefab, transform);
                 scoreManager = scoreManagerObj.GetComponent<ScoreManager>();
-            }
-            else
-            {
-                Debug.LogError("Score Manager prefab not found in Resources/Prefabs.");
             }
         }
 
@@ -112,10 +104,6 @@ public class GameManager : MonoBehaviour
                 GameObject shiftManagerObj = Instantiate(prefab, transform);
                 shiftManager = shiftManagerObj.GetComponent<ShiftManager>();
             }
-            else
-            {
-                Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
-            }
         }
 
         shopManager = GetComponentInChildren<ShopManager>();
@@ -127,9 +115,36 @@ public class GameManager : MonoBehaviour
                 GameObject shopManagerObj = Instantiate(prefab, transform);
                 shopManager = shopManagerObj.GetComponent<ShopManager>();
             }
+        }
+
+        // Final pass: ensure sub-managers have what they need if they were found in children
+        if (shiftManager != null)
+        {
+            if (shiftManager.deckManager == null) shiftManager.deckManager = deckManager;
+            
+            HandManager handManager = FindFirstObjectByType<HandManager>(FindObjectsInactive.Include);
+            if (handManager != null)
+            {
+                shiftManager.handManager = handManager;
+                if (handManager.deckManager == null) handManager.deckManager = deckManager;
+            }
             else
             {
-                Debug.LogError("Shop Manager prefab not found in Resources/Prefabs.");
+                Debug.LogWarning("GameManager: Could not find HandManager in scene (even inactive)!");
+            }
+        }
+
+        // Initialize CardModalController if present
+        CardModalController cardModal = GetComponent<CardModalController>();
+        if (cardModal != null)
+        {
+            // Find the root in scene if not assigned
+            var root = GameObject.Find("CardModalRoot");
+            if (root != null)
+            {
+                // Use reflection or a public setter if we don't want to change private fields, 
+                // but since I can change the script, I'll just make it find it in its own Start or here.
+                // For now, I'll update CardModalController.cs to be more self-sufficient.
             }
         }
     }

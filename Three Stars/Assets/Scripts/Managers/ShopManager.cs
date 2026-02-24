@@ -26,7 +26,6 @@ public class ShopManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     public void AddOverflowFromShift(int finalScore, int threshold, bool cleared)
@@ -72,7 +71,7 @@ public class ShopManager : MonoBehaviour
 
     public float GetCurrentMultiplier(HandEvaluator.HandRank rank)
     {
-        var prog = ProgressionManager.Instance;
+        var prog = GameManager.Instance.progressionManager;
         if (prog == null) return 1f;
 
         return rank switch
@@ -108,7 +107,7 @@ public class ShopManager : MonoBehaviour
         int cost = GetCost(rank);
         if (!TrySpend(cost)) return false;
 
-        var prog = ProgressionManager.Instance;
+        var prog = GameManager.Instance.progressionManager;
         if (prog == null) return false;
 
         // multiplier bump per purchase (tweak later)
