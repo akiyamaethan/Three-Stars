@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
 
     private void UpdateAllUI()
     {
-        var shiftManager = ShiftManager.Instance;
+        var shiftManager = GameManager.Instance.shiftManager;
         scoreText.text = $"Current Score: {shiftManager.score}";
         scoreThresholdText.text = $"Goal: {shiftManager.scoreThreshold}";
         playsText.text = $"Plays: {shiftManager.plays}";

@@ -81,6 +81,11 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     // Helper function to start the animation coroutine
     private void AnimateTo(Vector3 targetPosition)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            transform.localPosition = targetPosition;
+            return;
+        }
         if (animationCoroutine != null)
         {
             StopCoroutine(animationCoroutine);

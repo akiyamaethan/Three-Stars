@@ -6,10 +6,9 @@ using UnityEngine.UI;
 public class UpgradeCardDisplay : MonoBehaviour
 {
     public UpgradeCard cardData;
-
-    public Image cardImage;
     public Image cardBackground;
-    public TMP_Text cardText;
+    public TMP_Text cardName;
+    public TMP_Text cardDescription;
 
     public Color[] rarityColors = new Color[]
     {
@@ -40,8 +39,8 @@ public class UpgradeCardDisplay : MonoBehaviour
     {
         cardBackground.color = getRarityColor(cardData.rarity);
         cardBackground.sprite = cardData.cardBackground;
-        cardImage.sprite = cardData.cardImage;
-        cardText.text = cardData.cardText;
+        cardName.text = cardData.cardName;
+        cardDescription.text = cardData.cardText;
     }
 
 }

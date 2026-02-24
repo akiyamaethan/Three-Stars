@@ -5,18 +5,24 @@ using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-    public GameObject upgadeCardPrefab;
+    public GameObject upgradeCardPrefab;
     public Transform shopContentParent;
     public List<UpgradeCard> availableUpgrades;
 
     private void Awake()
     {
-        availableUpgrades = new List<UpgradeCard>(Resources.LoadAll<UpgradeCard>("Upgrade Card Data"));
+        var loaded = new List<UpgradeCard>(Resources.LoadAll<UpgradeCard>("Upgrade Card Data"));
+        foreach (var upgradeCard in loaded)
+        {
+            if (upgradeCard != null) availableUpgrades.Add(upgradeCard);
+        }
+        Debug.Log($"Loaded {availableUpgrades.Count} Upgrade cards");
+        
     }
     public void OpenShop()
     {
         ClearShop();
-        GenerateCards(3);
+        GenerateCards(1);
     }
 
     public void ClearShop()
@@ -32,19 +38,19 @@ public class ShopManager : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             UpgradeCard randomUpgrade = availableUpgrades[Random.Range(0, availableUpgrades.Count)];
-            GameObject cardGO = Instantiate(upgadeCardPrefab, shopContentParent);
+            GameObject cardGO = Instantiate(upgradeCardPrefab, shopContentParent);
             UpgradeCardDisplay cardDisplay = cardGO.GetComponent<UpgradeCardDisplay>();
             cardDisplay.cardData = randomUpgrade;
             cardDisplay.UpdateCardDisplay();
 
             Button btn = cardGO.GetComponent<Button>();
-            btn.onClick.AddListener(() => PurchaseUpgrade(randomUpgrade, cardGO));
+            if (btn != null) btn.onClick.AddListener(() => PurchaseUpgrade(randomUpgrade, cardGO));
         }
     }
 
     public void PurchaseUpgrade(UpgradeCard upgrade, GameObject visual)
     {
-        ProgressionManager.Instance.ApplyUpgrade(upgrade);
+        GameManager.Instance.progressionManager.ApplyUpgrade(upgrade);
         Destroy(visual);
     }
 }

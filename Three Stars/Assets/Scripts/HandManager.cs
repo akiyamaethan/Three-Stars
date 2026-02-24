@@ -24,7 +24,8 @@ public class HandManager : MonoBehaviour
 
     private void Awake()
     {
-        deckManager = FindAnyObjectByType<DeckManager>();
+        deckManager = GameManager.Instance.deckManager;
+        handEvaluator = GameManager.Instance.scoreManager.handEvaluator;
     }
 
 
@@ -42,7 +43,7 @@ public class HandManager : MonoBehaviour
     }
     public void DrawToFullHand()
     {
-        while (cardsInHand.Count < ProgressionManager.Instance.handSize)
+        while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize)
         {
             deckManager.DrawCard(this);
         }
@@ -100,7 +101,7 @@ public class HandManager : MonoBehaviour
     {
         if (selectedCards.Count != 4)
             return;
-        if (ShiftManager.Instance.plays < 1)
+        if (GameManager.Instance.shiftManager.plays < 1)
             return;
 
         List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
@@ -110,7 +111,7 @@ public class HandManager : MonoBehaviour
             cardsToScore.Add(card.GetComponent<CardDisplay>().cardInstance);
         }
         HandEvaluator.HandRank handRank;
-        int finalScore = ScoreManager.Instance.CalculateScore(cardsToScore, out handRank);
+        int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
 
         OnHandPlayed?.Invoke(cardsToScore, finalScore);
 
@@ -133,9 +134,9 @@ public class HandManager : MonoBehaviour
     {
         if (selectedCards.Count > 4 || selectedCards.Count == 0)
             return;
-        if (ShiftManager.Instance.discards < 1)
+        if (GameManager.Instance.shiftManager.discards < 1)
             return;
-        ShiftManager.Instance.TriggerDiscard();
+        GameManager.Instance.shiftManager.TriggerDiscard();
         List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
         cardsToDiscard.ForEach(card =>
         {

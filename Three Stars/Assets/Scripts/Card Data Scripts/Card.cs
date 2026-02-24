@@ -100,7 +100,7 @@ namespace ThreeStars
         public Sprite cardBackground;
         public Sprite cardImage;
         public string cardText;
-        public string description;
+        public string cardName;
         public List<UpgradeCategory> upgradeCategories;
         public float effectMagnitude;
         public CardRarity rarity;

@@ -5,21 +5,10 @@ using UnityEngine.UIElements;
 
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager Instance { get; private set; }
-    private HandEvaluator handEvaluator;
+    public HandEvaluator handEvaluator;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            handEvaluator = GetComponent<HandEvaluator>();
-        }
         handEvaluator = GetComponentInChildren<HandEvaluator>();
 
     }
@@ -33,7 +22,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         float totalPips = 0;
-        var prog = ProgressionManager.Instance;
+        var prog = GameManager.Instance.progressionManager;
         foreach (var card in hand)
         {
             float basePips = GetBasePips(card.cardData.cardRank);
