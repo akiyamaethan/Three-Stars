@@ -9,6 +9,7 @@ public class UpgradeCardDisplay : MonoBehaviour
     public Image cardBackground;
     public TMP_Text cardName;
     public TMP_Text cardDescription;
+    public TMP_Text cardPrice;
 
     public Color[] rarityColors = new Color[]
     {
@@ -35,12 +36,31 @@ public class UpgradeCardDisplay : MonoBehaviour
         }
     }
 
+    private int getPrice(CardRarity rarity)
+    {
+        switch (rarity)
+        {
+            case CardRarity.Common:
+                return 5;
+            case CardRarity.Uncommon:
+                return 7;
+            case CardRarity.Rare:
+                return 9;
+            case CardRarity.Legendary:
+                return 12;
+            default:
+                return 0;
+        }
+    }
+
     public void UpdateCardDisplay()
     {
         cardBackground.color = getRarityColor(cardData.rarity);
         cardBackground.sprite = cardData.cardBackground;
         cardName.text = cardData.cardName;
         cardDescription.text = cardData.cardText;
+        cardPrice.text = "Price: " + getPrice(cardData.rarity).ToString();
+
     }
 
 }
