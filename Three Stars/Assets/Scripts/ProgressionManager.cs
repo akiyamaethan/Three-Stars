@@ -11,6 +11,7 @@ namespace ThreeStars
         public int plays = 3;
         public int discards = 3;
         public int shiftNumber = 0;
+        public int playerBalance = 0;
         //used to determine next score threshold
         public int prevScore = 0;
         public int prevPrevScore = 0;

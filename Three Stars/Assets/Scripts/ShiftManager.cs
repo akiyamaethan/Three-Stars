@@ -24,6 +24,7 @@ public class ShiftManager : MonoBehaviour
     //managers
     public DeckManager deckManager;
     public HandManager handManager;
+    public ProgressionManager progressionManager;
 
     //utilities
     private float[] possibleNextRoundScoreMults = new float[] { 1.1f, 1.1f, 1.2f, 1.2f, 1.2f, 1.2f, 1.2f, 1.3f, 1.4f, 1.5f };
@@ -37,10 +38,11 @@ public class ShiftManager : MonoBehaviour
     {
         HandManager.OnHandPlayed -= OnHandPlayed;
     }
-    private void Awake()
+    private void Start()
     {
-        deckManager = FindAnyObjectByType<DeckManager>();
         handManager = FindAnyObjectByType<HandManager>();
+        deckManager = GameManager.Instance.deckManager;
+        progressionManager = GameManager.Instance.progressionManager;
     }
 
     private void RefreshUI()
@@ -49,13 +51,21 @@ public class ShiftManager : MonoBehaviour
     }
     private void OnHandPlayed(List<CardInstance> hand, int handScore)
     {
+
         plays--;
         score += handScore;
         if (debugMode) Debug.Log($"Current score: {score} / {scoreThreshold}");
         if (score >= scoreThreshold)
         {
             if (debugMode) Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
-            GameManager.Instance.progressionManager.shiftNumber++;
+            if (progressionManager.shiftNumber % 5 == 0)
+            {
+                progressionManager.playerBalance += 20;
+            } else
+            {
+                progressionManager.playerBalance += 10;
+            }
+                progressionManager.shiftNumber++;
             UpdatePreviousScores();
             GameManager.Instance.SwitchToShopState();
         }
@@ -64,7 +74,7 @@ public class ShiftManager : MonoBehaviour
             OnGameOver?.Invoke();
             if (debugMode) Debug.Log($"Game Over! Final score: {score} / {scoreThreshold}");
         }
-        if (debugMode) Debug.Log($"Hand played! Remaining plays: {plays} / {GameManager.Instance.progressionManager.plays}");
+        if (debugMode) Debug.Log($"Hand played! Remaining plays: {plays} / {progressionManager.plays}");
         RefreshUI();
     }
     public void ResetShift()
@@ -73,23 +83,23 @@ public class ShiftManager : MonoBehaviour
         handManager.ClearHand();
         handManager.DrawToFullHand();
         score = 0;
-        shiftNumber = GameManager.Instance.progressionManager.shiftNumber;
-        discards = GameManager.Instance.progressionManager.discards;
-        plays = GameManager.Instance.progressionManager.plays;
+        shiftNumber = progressionManager.shiftNumber;
+        discards = progressionManager.discards;
+        plays = progressionManager.plays;
         CalculateScoreThreshold();
         RefreshUI();
     }
 
     public void UpdatePreviousScores()
     {
-        GameManager.Instance.progressionManager .prevPrevPrevScore = GameManager.Instance.progressionManager.prevPrevScore;
-        GameManager.Instance.progressionManager.prevPrevScore = GameManager.Instance.progressionManager.prevScore;
-        GameManager.Instance.progressionManager.prevScore = score;      
-        if (debugMode) Debug.Log($"Updated previous scores: prevScore: {GameManager.Instance.progressionManager.prevScore}, prevPrevScore: {GameManager.Instance.progressionManager.prevPrevScore}, prevPrevPrevScore: {GameManager.Instance.progressionManager.prevPrevPrevScore}");
+        progressionManager .prevPrevPrevScore = progressionManager.prevPrevScore;
+        progressionManager.prevPrevScore = progressionManager.prevScore;
+        progressionManager.prevScore = score;      
+        if (debugMode) Debug.Log($"Updated previous scores: prevScore: {progressionManager.prevScore}, prevPrevScore: {progressionManager.prevPrevScore}, prevPrevPrevScore: {progressionManager.prevPrevPrevScore}");
     }
     public void CalculateScoreThreshold()
     {
-        prevScore = GameManager.Instance.progressionManager.prevScore;
+        prevScore = progressionManager.prevScore;
         if (prevScore == 0)
         {
             if (debugMode) Debug.Log("First shift, setting score threshold to 100");

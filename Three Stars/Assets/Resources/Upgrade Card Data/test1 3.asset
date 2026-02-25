@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b691e66eca614a4190bddb33a0f5242, type: 3}
   m_Name: test1 3
   m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:UpgradeCard
-  cardBackground: {fileID: 0}
+  cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: 
-  cardName: 
+  cardText: ultimate hahas
+  cardName: aksld;f
   upgradeCategories: 
   effectMagnitude: 0
-  rarity: 0
+  rarity: 2
