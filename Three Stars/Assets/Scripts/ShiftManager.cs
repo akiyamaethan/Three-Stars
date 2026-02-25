@@ -57,8 +57,7 @@ public class ShiftManager : MonoBehaviour
             if (debugMode) Debug.Log($"Shift {shiftNumber} complete! Score: {score}");
             GameManager.Instance.progressionManager.shiftNumber++;
             UpdatePreviousScores();
-            GameManager.Instance.SwitchToState(GameManager.GameState.InShop);
-            ResetShift();
+            GameManager.Instance.SwitchToShopState();
         }
         if (plays == 0 && score < scoreThreshold)
         {

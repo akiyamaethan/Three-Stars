@@ -22,7 +22,7 @@ public class ShopManager : MonoBehaviour
     public void OpenShop()
     {
         ClearShop();
-        GenerateCards(1);
+        GenerateCards(3);
     }
 
     public void ClearShop()

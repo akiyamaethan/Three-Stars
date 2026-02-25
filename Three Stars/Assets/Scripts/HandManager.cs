@@ -6,9 +6,9 @@ using ThreeStars;
 public class HandManager : MonoBehaviour
 {
     //Managers
-    public DeckManager deckManager; // Assign in inspector
-    public GameObject cardPrefab; // Assign in inspector
-    public HandEvaluator handEvaluator; // Assign in inspector
+    public DeckManager deckManager;
+    public GameObject cardPrefab; 
+    public HandEvaluator handEvaluator;
 
     //Visual Variables
     public Transform handTransform;

@@ -37,23 +37,13 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeManagers();
-            SwitchToState(GameState.Playing);
         }
     }
     private void Start()
     {
-        shiftManager.ResetShift(); //Starts the game
+        SwitchToPlayState();
     }
-
-    public void SwitchToState(GameState state)
-    {
-        currentState = state;
-        gameplayCanvas.gameObject.SetActive(state == GameState.Playing);
-        shopCanvas.gameObject.SetActive(state == GameState.InShop);
-        shopManager.OpenShop();
-    }
-
-
+    // Initializer
     private void InitializeManagers()
     {
         deckManager = GetComponentInChildren<DeckManager>();
@@ -131,6 +121,22 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Shop Manager prefab not found in Resources/Prefabs.");
             }
         }
+    }
+
+    public void SwitchToPlayState()
+    {
+        currentState = GameState.Playing;
+        gameplayCanvas.gameObject.SetActive(true);
+        shopCanvas.gameObject.SetActive(false);
+        shiftManager.ResetShift();
+    }
+
+    public void SwitchToShopState()
+    {
+        currentState = GameState.InShop;
+        gameplayCanvas.gameObject.SetActive(false);
+        shopCanvas.gameObject.SetActive(true);
+        shopManager.OpenShop();
     }
 }
 
