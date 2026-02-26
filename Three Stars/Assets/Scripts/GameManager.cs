@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public HandManager handManager { get; private set; }
     public DeckManager deckManager { get; private set; }
     public ThreeStars.ProgressionManager progressionManager { get; private set; }
     public ScoreManager scoreManager { get; private set; }
@@ -46,82 +47,36 @@ public class GameManager : MonoBehaviour
     // Initializer
     private void InitializeManagers()
     {
-        deckManager = GetComponentInChildren<DeckManager>();
+        deckManager = GetOrLoadManager<DeckManager>("Prefabs/Deck Manager");
+        progressionManager = GetOrLoadManager<ThreeStars.ProgressionManager>("Prefabs/Progression Manager");
+        scoreManager = GetOrLoadManager<ScoreManager>("Prefabs/Score Manager");
+        shiftManager = GetOrLoadManager<ShiftManager>("Prefabs/Shift Manager");
+        handManager = FindAnyObjectByType<HandManager>();
+        HandEvaluator handEvaluator = FindAnyObjectByType<HandEvaluator>();
 
-        if (deckManager == null)
-        {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Deck Manager");
-            if (prefab != null)
-            {
-                GameObject deckManagerObj = Instantiate(prefab, transform);
-                deckManager = deckManagerObj.GetComponent<DeckManager>();
-            }
-            else
-            {
-                Debug.LogError("Deck Manager prefab not found in Resources/Prefabs.");
-            }
-        }
+        handManager.Initialize(deckManager, handEvaluator);
+        shiftManager.Initialize(handManager, deckManager, progressionManager);
+
         deckManager.InitializeDeck();
+    }
 
-        progressionManager = GetComponentInChildren<ThreeStars.ProgressionManager>();
-        if (progressionManager == null)
+    private T GetOrLoadManager<T>(string path) where T : MonoBehaviour
+    {
+        T manager = GetComponentInChildren<T>();
+        if (manager == null)
         {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Progression Manager");
+            GameObject prefab = Resources.Load<GameObject>(path);
             if (prefab != null)
             {
-                GameObject progressionManagerObj = Instantiate(prefab, transform);
-                progressionManager = progressionManagerObj.GetComponent<ThreeStars.ProgressionManager>();
+                GameObject managerObj = Instantiate(prefab, transform);
+                manager = managerObj.GetComponent<T>();
             }
             else
             {
-                Debug.LogError("Progression Manager prefab not found in Resources/Prefabs.");
+                Debug.LogError($"{typeof(T).Name} prefab not found in Resources/Prefabs.");
             }
         }
-
-        scoreManager = GetComponentInChildren<ScoreManager>();
-        if (scoreManager == null)
-        {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Score Manager");
-            if (prefab != null)
-            {
-                GameObject scoreManagerObj = Instantiate(prefab, transform);
-                scoreManager = scoreManagerObj.GetComponent<ScoreManager>();
-            }
-            else
-            {
-                Debug.LogError("Score Manager prefab not found in Resources/Prefabs.");
-            }
-        }
-
-        shiftManager = GetComponentInChildren<ShiftManager>();
-        if (shiftManager == null)
-        {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Shift Manager");
-            if (prefab != null)
-            {
-                GameObject shiftManagerObj = Instantiate(prefab, transform);
-                shiftManager = shiftManagerObj.GetComponent<ShiftManager>();
-            }
-            else
-            {
-                Debug.LogError("Shift Manager prefab not found in Resources/Prefabs.");
-            }
-        }
-
-        shopManager = GetComponentInChildren<ShopManager>();
-        if (shopManager == null)
-        {
-            GameObject prefab = Resources.Load<GameObject>("Prefabs/Shop Manager");
-            if (prefab != null)
-            {
-                GameObject shopManagerObj = Instantiate(prefab, transform);
-                shopManager = shopManagerObj.GetComponent<ShopManager>();
-            }
-            else
-            {
-                Debug.LogError("Shop Manager prefab not found in Resources/Prefabs.");
-            }
-        }
+        return manager;
     }
 
     public void SwitchToPlayState()

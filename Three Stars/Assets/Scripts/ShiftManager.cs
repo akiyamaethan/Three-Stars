@@ -38,11 +38,11 @@ public class ShiftManager : MonoBehaviour
     {
         HandManager.OnHandPlayed -= OnHandPlayed;
     }
-    private void Awake()
+    public void Initialize(HandManager hm, DeckManager dm, ProgressionManager pm)
     {
-        handManager = FindAnyObjectByType<HandManager>();
-        deckManager = GameManager.Instance.deckManager;
-        progressionManager = GameManager.Instance.progressionManager;
+        this.handManager = hm;
+        this.deckManager = dm;
+        this.progressionManager = pm;
     }
 
     private void RefreshUI()

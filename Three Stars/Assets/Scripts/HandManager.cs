@@ -22,10 +22,10 @@ public class HandManager : MonoBehaviour
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
 
-    private void Awake()
+    public void Initialize(DeckManager dm, HandEvaluator he)
     {
-        deckManager = GameManager.Instance.deckManager;
-        handEvaluator = GameManager.Instance.scoreManager.handEvaluator;
+        this.deckManager = dm;
+        this.handEvaluator = he;
     }
 
 
