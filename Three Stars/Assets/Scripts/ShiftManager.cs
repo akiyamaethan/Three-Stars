@@ -38,7 +38,7 @@ public class ShiftManager : MonoBehaviour
     {
         HandManager.OnHandPlayed -= OnHandPlayed;
     }
-    private void Start()
+    private void Awake()
     {
         handManager = FindAnyObjectByType<HandManager>();
         deckManager = GameManager.Instance.deckManager;
@@ -79,6 +79,10 @@ public class ShiftManager : MonoBehaviour
     }
     public void ResetShift()
     {
+        if (deckManager == null) deckManager = GameManager.Instance.deckManager;
+        if (handManager == null) handManager = FindAnyObjectByType<HandManager>();
+        if (progressionManager == null) progressionManager = GameManager.Instance.progressionManager;
+
         deckManager.Shuffle();
         handManager.ClearHand();
         handManager.DrawToFullHand();

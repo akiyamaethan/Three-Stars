@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("Deck Manager prefab not found in Resources/Prefabs.");
             }
         }
+        deckManager.InitializeDeck();
 
         progressionManager = GetComponentInChildren<ThreeStars.ProgressionManager>();
         if (progressionManager == null)

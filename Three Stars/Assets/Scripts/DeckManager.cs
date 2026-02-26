@@ -11,12 +11,19 @@ public class DeckManager : MonoBehaviour
 
     public void Awake()
     {
-        //Load all card assets from the Resources folder and add them to the deck
-        PlayingCard[] allCards = Resources.LoadAll<PlayingCard>("Playing Card Data");
-        for (int i = 0; i < allCards.Length; i++)
+        if (deck.Count == 0)
         {
-            CardInstance cardInstance = new CardInstance(allCards[i]);
-            deck.Add(cardInstance);
+            InitializeDeck();
+        }
+    }
+
+    public void InitializeDeck()
+    {
+        deck.Clear();
+        PlayingCard[] allCards = Resources.LoadAll<PlayingCard>("Playing Card Data");
+        foreach (PlayingCard card in allCards)
+        {
+            deck.Add(new CardInstance(card));
         }
         Shuffle();
     }

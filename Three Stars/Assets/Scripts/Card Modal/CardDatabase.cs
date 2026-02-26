@@ -19,7 +19,7 @@ public class CardDatabase : MonoBehaviour
             return;
         }
 
-        string[] lines = csvFile.text.Split('\n');
+        string[] lines = csvFile.text.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.None);
 
         // Skip header row (index 0)
         for (int i = 1; i < lines.Length; i++)
@@ -30,10 +30,10 @@ public class CardDatabase : MonoBehaviour
 
             CardData card = new CardData
             {
-                Type = values[0].Trim(' ', '\"'),
-                Name = values[1].Trim(' ', '\"'),
-                Level = int.Parse(values[2].Trim(' ', '\"')),
-                Bonus = float.Parse(values[3].Trim(' ', '\"'))
+                Type = values[0].Trim(' ', '\"', '\r', '\n'),
+                Name = values[1].Trim(' ', '\"', '\r', '\n'),
+                Level = int.Parse(values[2].Trim(' ', '\"', '\r', '\n')),
+                Bonus = float.Parse(values[3].Trim(' ', '\"', '\r', '\n'))
             };
 
             AllCards.Add(card);

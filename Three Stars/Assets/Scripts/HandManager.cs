@@ -43,9 +43,27 @@ public class HandManager : MonoBehaviour
     }
     public void DrawToFullHand()
     {
-        while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize)
+        if (deckManager == null)
         {
+            deckManager = GameManager.Instance.deckManager;
+        }
+        if (deckManager.deck.Count == 0)
+        {
+            deckManager.InitializeDeck();
+        }
+        int iterations = 0;
+        int maxIterations = 100;
+        while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize && iterations < maxIterations)
+        {
+            int countBefore = cardsInHand.Count;
             deckManager.DrawCard(this);
+            iterations++;
+
+            if (cardsInHand.Count == countBefore)
+            {
+                Debug.LogWarning("No more cards to draw, stopping draw loop.");
+                break;
+            }
         }
     }
 
