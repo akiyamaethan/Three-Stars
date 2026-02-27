@@ -176,16 +176,17 @@ public class HandManager : MonoBehaviour
         int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
 
         OnHandPlayed?.Invoke(cardsToScore, finalScore);
-
         Debug.Log($"Played hand with rank {handRank} for {finalScore} points!");
 
         //visually moves card to discard pile
-        cardsToMove.ForEach(card =>
+        Transform[] foodTargets = {foodTransform1, foodTransform2, foodTransform3, foodTransform4};
+        for (int i = 0; i < foodTargets.Length; i++)
         {
-            discards.Add(card.gameObject);
-            card.Play();
-            cardsInHand.Remove(card.gameObject);
-        });
+            discards.Add(cardsToMove[i].gameObject);
+            cardsToMove[i].PlayFancyAnimation(foodTargets[i]);
+            cardsInHand.Remove(cardsToMove[i].gameObject);
+        }
+        
 
         //Reset hand selection and card amount
         selectedCards.Clear();

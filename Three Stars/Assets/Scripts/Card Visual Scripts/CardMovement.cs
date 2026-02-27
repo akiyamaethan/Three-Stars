@@ -1,10 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] public RectTransform detachedImageContainer;
     private RectTransform rectTransform;
     private RectTransform discardTransform;
     private Vector3 originalScale;
@@ -13,6 +14,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private Quaternion originalRotation;
     private Coroutine animationCoroutine;
     private HandManager handManager;
+    public CardDisplay cardDisplay;
 
     private Color hoverGlowColor = Color.grey;
     private Color selectedGlowColor = Color.white;
@@ -118,6 +120,64 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         transform.localPosition = targetPosition;
     }
 
+    public void PlayFancyAnimation(Transform target)
+    {
+        TransitionToPlayedState();
+        StartCoroutine(FancyAnimation(target));
+    }
+
+    private IEnumerator FancyAnimation(Transform target)
+    {
+        cardDisplay = GetComponent<CardDisplay>();
+        Image imageToSwirl = cardDisplay.foodImage;
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+        Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+        imageToSwirl.transform.SetParent(rootCanvas.transform, true);
+
+        float bodyDuration = 0.5f;
+        float elapsed = 0f;
+        Vector3 bodyStartPos = rectTransform.localPosition;
+        Vector3 bodyEndPos = bodyStartPos + Vector3.down * 1000f;
+
+        while (elapsed < bodyDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / bodyDuration;
+            rectTransform.localPosition = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
+            canvasGroup.alpha = 1f - t;
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0f;
+
+        yield return new WaitForSeconds(1.0f);
+
+        float swirldDuration = 1.25f;
+        elapsed = 0f;
+        Vector3 swirlStartPos = imageToSwirl.transform.position;
+        float startRadius = 200f;
+        float swirlSpeed = 10f;
+
+        while (elapsed < swirldDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / swirldDuration;
+            float easeT = t * t * (3f - 2f * t);
+
+            float currentRadius = Mathf.Lerp(startRadius, 0, easeT);
+            float angle = elapsed * swirlSpeed;
+            Vector3 offset = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * currentRadius;
+
+            imageToSwirl.transform.position = Vector3.Lerp(swirlStartPos, target.position, easeT) + offset; ;
+            yield return null;
+        }
+
+        imageToSwirl.transform.position = target.position;
+    }
     //State Handlers
     private void HandleIdleState()
     {

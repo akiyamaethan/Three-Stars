@@ -10,7 +10,6 @@ public class CardDisplay : MonoBehaviour
 {
     public CardInstance cardInstance;
 
-    public Image cardImage;
     public Image cardBackground;
     public Image foodImage;
     public Image rankImage;
