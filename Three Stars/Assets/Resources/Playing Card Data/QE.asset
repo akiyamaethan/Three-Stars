@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a7aedee3bde74a8243f1b95836269, type: 3}
   m_Name: QE
   m_EditorClassIdentifier: 
-  cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
-  foodImage: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
+  foodImage: {fileID: 21300000, guid: fdbad97aa1d7b9f45bc389099f724948, type: 3}
   rankImage: {fileID: 21300000, guid: 1be70b4823d0e2845ab60d0e1c279db3, type: 3}
   suitImage: {fileID: 21300000, guid: 006b6f328a3ad8843a7064dd03baffaa, type: 3}
   cardText: text

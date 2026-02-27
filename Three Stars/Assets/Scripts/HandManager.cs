@@ -13,6 +13,10 @@ public class HandManager : MonoBehaviour
 
     //Visual Variables
     public Transform handTransform;
+    public Transform foodTransform1;
+    public Transform foodTransform2;
+    public Transform foodTransform3;
+    public Transform foodTransform4;
     public float cardSpacing = 150f;
     public Button playButton = null;
     public Button discardButton = null;

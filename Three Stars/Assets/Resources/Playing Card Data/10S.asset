@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 10S
   m_EditorClassIdentifier: 
   cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
-  foodImage: {fileID: 0}
+  foodImage: {fileID: 21300000, guid: fdbad97aa1d7b9f45bc389099f724948, type: 3}
   rankImage: {fileID: 21300000, guid: 6549556a5d4726942bb6b939e4e61c53, type: 3}
   suitImage: {fileID: 21300000, guid: c43588e8c5c65644d854582a8fdb9abb, type: 3}
   cardText: 

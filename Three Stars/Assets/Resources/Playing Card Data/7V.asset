@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 468a7aedee3bde74a8243f1b95836269, type: 3}
   m_Name: 7V
   m_EditorClassIdentifier: 
-  cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
-  foodImage: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
+  foodImage: {fileID: 21300000, guid: fdbad97aa1d7b9f45bc389099f724948, type: 3}
   rankImage: {fileID: 21300000, guid: 58364f6cf2f2fdb45b19148ee4effc92, type: 3}
   suitImage: {fileID: 21300000, guid: 44fc24d89316b7b48a1dec25c893522a, type: 3}
   cardText: text
