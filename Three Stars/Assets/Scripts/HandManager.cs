@@ -16,6 +16,9 @@ public class HandManager : MonoBehaviour
     public float cardSpacing = 150f;
     public Button playButton = null;
     public Button discardButton = null;
+    public Button sortRankButton = null;
+    public Button sortSuitButton = null;
+    public SortType sortPreference = SortType.Rank;
 
     //Card Trackers
     public List<GameObject> cardsInHand = new List<GameObject>();
@@ -24,6 +27,13 @@ public class HandManager : MonoBehaviour
 
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
+
+    //Enum
+    public enum SortType
+    {
+        Rank,
+        Suit
+    }
 
     public void Initialize(DeckManager dm, HandEvaluator he)
     {
@@ -48,15 +58,8 @@ public class HandManager : MonoBehaviour
     }
     public void DrawToFullHand()
     {
-        if (deckManager == null)
-        {
-            deckManager = GameManager.Instance.deckManager;
-        }
-        if (deckManager.deck.Count == 0)
-        {
-            deckManager.InitializeDeck();
-        }
-        int iterations = 0;
+        // Draw the cards
+        int iterations = 0; //infinit loop protection
         int maxIterations = 100;
         while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize && iterations < maxIterations)
         {
@@ -69,6 +72,16 @@ public class HandManager : MonoBehaviour
                 Debug.LogWarning("No more cards to draw, stopping draw loop.");
                 break;
             }
+        }
+
+        // Sort according to preference
+        if (sortPreference == SortType.Rank)
+        {
+            SortByRank();
+        }
+        else
+        {
+            SortBySuit();
         }
     }
 
@@ -197,12 +210,18 @@ public class HandManager : MonoBehaviour
     {
         cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardRank).ToList();
         UpdateCardPositions();
+        sortPreference = SortType.Rank;
+        sortRankButton.interactable = false;
+        sortSuitButton.interactable = true;
     }
 
     public void SortBySuit()
     {
         cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardSuit).ToList();
         UpdateCardPositions();
+        sortPreference = SortType.Suit;
+        sortRankButton.interactable = true;
+        sortSuitButton.interactable = false;
     }
 
     public void SetHighlightPlayButton(bool highlight)
