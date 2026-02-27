@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
         progressionManager = GetOrLoadManager<ThreeStars.ProgressionManager>("Prefabs/Progression Manager");
         scoreManager = GetOrLoadManager<ScoreManager>("Prefabs/Score Manager");
         shiftManager = GetOrLoadManager<ShiftManager>("Prefabs/Shift Manager");
+        shopManager = GetOrLoadManager<ShopManager>("Prefabs/Shop Manager");
         handManager = FindAnyObjectByType<HandManager>();
         HandEvaluator handEvaluator = FindAnyObjectByType<HandEvaluator>();
 

@@ -4842,6 +4842,8 @@ MonoBehaviour:
   handEvaluator: {fileID: 0}
   handTransform: {fileID: 559969583}
   cardSpacing: 250
+  playButton: {fileID: 1377505633}
+  discardButton: {fileID: 180800026}
   cardsInHand: []
   selectedCards: []
   discards: []

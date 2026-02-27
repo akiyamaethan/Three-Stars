@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using ThreeStars;
+using UnityEngine.UI;
 
 public class HandManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class HandManager : MonoBehaviour
     //Visual Variables
     public Transform handTransform;
     public float cardSpacing = 150f;
+    public Button playButton = null;
+    public Button discardButton = null;
 
     //Card Trackers
     public List<GameObject> cardsInHand = new List<GameObject>();
@@ -26,6 +29,8 @@ public class HandManager : MonoBehaviour
     {
         this.deckManager = dm;
         this.handEvaluator = he;
+        SetHighlightDiscardButton(false);
+        SetHighlightPlayButton(false);
     }
 
 
@@ -92,6 +97,28 @@ public class HandManager : MonoBehaviour
         else
         {
             selectedCards.Add(card);
+        }
+        UpdateButtons();
+    }
+
+    public void UpdateButtons()
+    {
+
+        if (selectedCards.Count < 5 && selectedCards.Count > 0)
+        {
+            SetHighlightDiscardButton(true);
+        }
+        else
+        {
+            SetHighlightDiscardButton(false);
+        }
+        if (selectedCards.Count == 4)
+        {
+            SetHighlightPlayButton(true);
+        }
+        else
+        {
+            SetHighlightPlayButton(false);
         }
     }
 
@@ -176,5 +203,29 @@ public class HandManager : MonoBehaviour
     {
         cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardSuit).ToList();
         UpdateCardPositions();
+    }
+
+    public void SetHighlightPlayButton(bool highlight)
+    {
+        if (highlight)
+        {
+            playButton.interactable = true;
+        }
+        else
+        {
+            playButton.interactable = false;
+        }
+    }
+
+    public void SetHighlightDiscardButton(bool highlight)
+    {
+        if (highlight)
+        {
+            discardButton.interactable = true;
+        }
+        else
+        {
+            discardButton.interactable = false;
+        }
     }
 }

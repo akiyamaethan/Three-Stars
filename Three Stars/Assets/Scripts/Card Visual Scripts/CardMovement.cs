@@ -14,7 +14,11 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private Coroutine animationCoroutine;
     private HandManager handManager;
 
+    private Color hoverGlowColor = Color.grey;
+    private Color selectedGlowColor = Color.white;
+
     [SerializeField] private float selectScale = 1.1f;
+    [SerializeField] private float hoverScale = 1.05f;
     [SerializeField] private Vector2 cardPlay;
     [SerializeField] private Vector3 playPosition;
     [SerializeField] private GameObject glowEffect;
@@ -124,20 +128,37 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     }
     private void HandleHoverState()
     {
-        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * hoverScale, Time.deltaTime * 10f);
         glowEffect.SetActive(true);
+        glowEffect.GetComponent<UnityEngine.UI.Image>().color = hoverGlowColor;
     }
     private void HandleSelectedState()
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale * selectScale, Time.deltaTime * 10f);
         glowEffect.SetActive(true);
+        glowEffect.GetComponent<UnityEngine.UI.Image>().color = selectedGlowColor;
+    }
 
+    private void ToggleSelected()
+    {
+        if ( currentState == 2)
+        {
+            currentState = 1;
+        } else
+        {
+            currentState = 2;
+        }
+        handManager.SetSelected(this);
     }
 
     //Event Handlers
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (Input.GetMouseButton(0))
+        {
+            ToggleSelected();
+        }
         if (currentState == 0)
         {
             currentState = 1;
@@ -153,16 +174,6 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (currentState == 1)
-        {
-            currentState = 2;
-            handManager.SetSelected(this);
-        }
-
-        else if (currentState == 2)
-        {
-            currentState = 1;
-            handManager.SetSelected(this);
-        }
+        ToggleSelected();
     }
 }
