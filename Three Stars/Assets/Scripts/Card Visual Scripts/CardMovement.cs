@@ -17,18 +17,20 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private Coroutine animationCoroutine;
     private HandManager handManager;
     public CardDisplay cardDisplay;
-    private GameObject foodToDestroy; 
+    private GameObject foodToDestroy;
+    private bool isFlipped = false;
 
     // Colors
     private Color hoverGlowColor = Color.grey;
     private Color selectedGlowColor = Color.white;
 
-    //
+    // Parameters
     [SerializeField] private float selectScale = 1.1f;
     [SerializeField] private float hoverScale = 1.05f;
     [SerializeField] private Vector3 playPosition;
     [SerializeField] private GameObject glowEffect;
     [SerializeField] private float moveDuration = 1.0f;
+    [SerializeField] public Sprite cardBackSprite;
 
     void Awake()
     {
@@ -103,6 +105,24 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         animationCoroutine = StartCoroutine(AnimatePosition(targetPosition));
     }
 
+    private void SwapToFaceDown()
+    {
+        CardDisplay display = GetComponent<CardDisplay>();
+        if (display != null && cardBackSprite != null)
+        {
+            display.cardBackground.sprite = cardBackSprite;
+            display.cardBackground.color = Color.white;
+
+            display.rankImage.gameObject.SetActive(false);
+            display.suitImage.gameObject.SetActive(false);
+            display.cardText.gameObject.SetActive(false);
+            display.suitText.gameObject.SetActive(false);
+            display.cardText.gameObject.SetActive(false);
+        }
+    }
+
+    // Coroutines
+
     private IEnumerator AnimatePosition(Vector3 targetPosition)
     {
         float elapsedTime = 0f;
@@ -132,6 +152,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     private IEnumerator FancyAnimation(Transform target)
     {
+        // Setup
         cardDisplay = GetComponent<CardDisplay>();
         Image imageToSwirl = cardDisplay.foodImage;
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
@@ -142,27 +163,41 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
         imageToSwirl.transform.SetParent(rootCanvas.transform, true);
         foodToDestroy = imageToSwirl.gameObject;
-
-        float bodyDuration = 0.5f;
-        float elapsed = 0f;
         Vector3 bodyStartPos = rectTransform.localPosition;
-        Vector3 bodyEndPos = bodyStartPos + Vector3.down * 1000f;
+        Vector3 bodyEndPos = discardTransform.localPosition;
+        float elapsed = 0f;
+        isFlipped = false;
 
+        // Parameters
+        float arcHeight = 1200f;
+        float bodyDuration = 0.5f;
+
+        // Card body detach and fly away
         while (elapsed < bodyDuration)
         {
-            if (target == null || imageToSwirl == null) yield break;
-
             elapsed += Time.deltaTime;
             float t = elapsed / bodyDuration;
-            rectTransform.localPosition = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
-            canvasGroup.alpha = 1f - t;
+
+            Vector3 linearPos = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
+            float downwardDip = 4f * t * (1f - t) * arcHeight;
+            rectTransform.localPosition = linearPos + (Vector3.down * downwardDip);
+
+            //flip
+            float rotationY = t * 180f;
+            rectTransform.localRotation = Quaternion.Euler(0, rotationY, 0);
+            if (t >= 0.5f && !isFlipped)
+            {
+                isFlipped = true;
+                SwapToFaceDown();
+            }
+            canvasGroup.alpha = 1f;
             yield return null;
         }
 
-        canvasGroup.alpha = 0f;
+        rectTransform.localPosition = bodyEndPos;
+        yield return new WaitForSeconds(0.3f);
 
-        yield return new WaitForSeconds(1.0f);
-
+        // Food Image Swirl
         float swirldDuration = 1.25f;
         elapsed = 0f;
         Vector3 swirlStartPos = imageToSwirl.transform.position;

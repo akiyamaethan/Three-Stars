@@ -1048,7 +1048,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardInstance:
     cardData: {fileID: 0}
-  cardImage: {fileID: 3516782279718304513}
   cardBackground: {fileID: 4368600781590449786}
   foodImage: {fileID: 3516782279718304513}
   rankImage: {fileID: 303757479565507949}
@@ -1118,12 +1117,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6952235c05b6142aa5cda94a40f43c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardDisplay: {fileID: 0}
   selectScale: 1.1
   hoverScale: 1.05
-  cardPlay: {x: 0, y: 0}
   playPosition: {x: 0, y: 0, z: 0}
   glowEffect: {fileID: 6538887132376203922}
   moveDuration: 1
+  cardBackSprite: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
 --- !u!225 &5344426714067064684
 CanvasGroup:
   m_ObjectHideFlags: 0
