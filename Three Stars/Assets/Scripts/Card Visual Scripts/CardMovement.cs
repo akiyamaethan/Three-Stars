@@ -5,23 +5,27 @@ using UnityEngine.EventSystems;
 
 public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] public RectTransform detachedImageContainer;
-    private RectTransform rectTransform;
-    private RectTransform discardTransform;
+
+    private RectTransform rectTransform; //Card Transform
+    private RectTransform discardTransform; // Discard Pile
     private Vector3 originalScale;
-    private Vector3 originalPosition;
+    private Vector3 originalPosition; // These are used for selecting/making the card larger
     private int currentState = 0;
+
+    // Animation variables
     private Quaternion originalRotation;
     private Coroutine animationCoroutine;
     private HandManager handManager;
     public CardDisplay cardDisplay;
+    private GameObject foodToDestroy; 
 
+    // Colors
     private Color hoverGlowColor = Color.grey;
     private Color selectedGlowColor = Color.white;
 
+    //
     [SerializeField] private float selectScale = 1.1f;
     [SerializeField] private float hoverScale = 1.05f;
-    [SerializeField] private Vector2 cardPlay;
     [SerializeField] private Vector3 playPosition;
     [SerializeField] private GameObject glowEffect;
     [SerializeField] private float moveDuration = 1.0f;
@@ -137,6 +141,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         }
         Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
         imageToSwirl.transform.SetParent(rootCanvas.transform, true);
+        foodToDestroy = imageToSwirl.gameObject;
 
         float bodyDuration = 0.5f;
         float elapsed = 0f;
@@ -145,6 +150,8 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
         while (elapsed < bodyDuration)
         {
+            if (target == null || imageToSwirl == null) yield break;
+
             elapsed += Time.deltaTime;
             float t = elapsed / bodyDuration;
             rectTransform.localPosition = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
@@ -215,6 +222,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (currentState == 3) return;
         if (Input.GetMouseButton(0))
         {
             ToggleSelected();
@@ -226,6 +234,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (currentState == 3) return;
         if (currentState == 1)
         {
             TransitionToState0();
@@ -234,6 +243,15 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (currentState == 3) return;
         ToggleSelected();
+    }
+
+    private void OnDestroy()
+    {
+        if (foodToDestroy != null)
+        {
+            Destroy(foodToDestroy);
+        }
     }
 }

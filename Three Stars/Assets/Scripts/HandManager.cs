@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ThreeStars;
 using UnityEngine.UI;
+using System.Collections;
 
 public class HandManager : MonoBehaviour
 {
@@ -27,7 +28,8 @@ public class HandManager : MonoBehaviour
     //Card Trackers
     public List<GameObject> cardsInHand = new List<GameObject>();
     public List<CardMovement> selectedCards = new List<CardMovement>();
-    public List<GameObject> discards = new List<GameObject>();
+    public List<GameObject> publicDiscards = new List<GameObject>(); // Used for visuals
+    public List<GameObject> privateDiscards = new List<GameObject>(); // USE THIS FOR DISCARD MODAL
 
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
@@ -47,6 +49,20 @@ public class HandManager : MonoBehaviour
         SetHighlightPlayButton(false);
     }
 
+    // Coroutines
+    private IEnumerator PlayHandRoutine(List<CardMovement> cardsToMove, Transform[] foodTargets)
+    {
+        for (int i = 0; i < foodTargets.Length; i++)
+        {
+            publicDiscards.Add(cardsToMove[i].gameObject);
+            cardsToMove[i].PlayFancyAnimation(foodTargets[i]);
+            cardsInHand.Remove(cardsToMove[i].gameObject);
+        }
+        selectedCards.Clear();
+
+        yield return new WaitForSeconds(3.0f);
+        DrawToFullHand();
+    }
 
     // Hand Manipulation Methods
     public void AddCardToHand(CardInstance cardInstance)
@@ -95,13 +111,19 @@ public class HandManager : MonoBehaviour
         {
             Destroy(card);
         }
-        foreach (GameObject card in discards)
+        foreach (GameObject card in publicDiscards)
         {
             Destroy(card);
         }
+        foreach (GameObject card in privateDiscards)
+        {
+            Destroy(card);
+        }
+
         cardsInHand.Clear();
         selectedCards.Clear();
-        discards.Clear();
+        publicDiscards.Clear();
+        privateDiscards.Clear();
     }
 
     // Selection Methods
@@ -161,52 +183,49 @@ public class HandManager : MonoBehaviour
     // Event Handlers
     public void OnPlayButtonPressed()
     {
-        if (selectedCards.Count != 4)
-            return;
-        if (GameManager.Instance.shiftManager.plays < 1)
-            return;
+        if (selectedCards.Count != 4 || GameManager.Instance.shiftManager.plays < 1) return;
+
+        foreach(GameObject card in publicDiscards)
+        {
+            if (card != null) Destroy(card);
+        }
+        publicDiscards.Clear();
 
         List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
         List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject)); //this is the list of cards on the canvas
+
         foreach (CardMovement card in selectedCards)
         {
             cardsToScore.Add(card.GetComponent<CardDisplay>().cardInstance);
         }
+
         HandEvaluator.HandRank handRank;
         int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
-
         OnHandPlayed?.Invoke(cardsToScore, finalScore);
         Debug.Log($"Played hand with rank {handRank} for {finalScore} points!");
 
         //visually moves card to discard pile
         Transform[] foodTargets = {foodTransform1, foodTransform2, foodTransform3, foodTransform4};
-        for (int i = 0; i < foodTargets.Length; i++)
-        {
-            discards.Add(cardsToMove[i].gameObject);
-            cardsToMove[i].PlayFancyAnimation(foodTargets[i]);
-            cardsInHand.Remove(cardsToMove[i].gameObject);
-        }
-        
+        StartCoroutine(PlayHandRoutine(cardsToMove, foodTargets));
 
-        //Reset hand selection and card amount
-        selectedCards.Clear();
-        DrawToFullHand();
+
     }
 
     public void OnDiscardButtonPressed()
     {
-        if (selectedCards.Count > 4 || selectedCards.Count == 0)
-            return;
-        if (GameManager.Instance.shiftManager.discards < 1)
-            return;
+        if (selectedCards.Count > 4 || selectedCards.Count == 0) return;
+        if (GameManager.Instance.shiftManager.discards < 1) return;
+
         GameManager.Instance.shiftManager.TriggerDiscard();
         List<CardMovement> cardsToDiscard = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
+
         cardsToDiscard.ForEach(card =>
         {
-            discards.Add(card.gameObject);
+            privateDiscards.Add(card.gameObject);
             card.Discard();
             cardsInHand.Remove(card.gameObject);
         });
+
         selectedCards.Clear();
         DrawToFullHand();
     }
