@@ -1,7 +1,8 @@
 using System.Collections;
-using UnityEngine.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -79,15 +80,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     public void Discard()
     {
         TransitionToPlayedState();
-        Vector3 newPos = discardTransform.localPosition;
-        AnimateTo(newPos);
-    }
-
-    public void Play()
-    {
-        TransitionToPlayedState();
-        Vector3 newPos = discardTransform.localPosition;
-        AnimateTo(newPos);
+        AnimateTo(discardTransform.position);
     }
 
     // Helper function to start the animation coroutine
@@ -115,7 +108,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
             display.rankImage.gameObject.SetActive(false);
             display.suitImage.gameObject.SetActive(false);
-            display.cardText.gameObject.SetActive(false);
+            display.rankText.gameObject.SetActive(false);
             display.suitText.gameObject.SetActive(false);
             display.cardText.gameObject.SetActive(false);
         }
@@ -126,22 +119,39 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     private IEnumerator AnimatePosition(Vector3 targetPosition)
     {
         float elapsedTime = 0f;
-        Vector3 startPosition = transform.localPosition;
+        Vector3 startPosition = transform.position;
+        isFlipped = false;
 
         // If we're already very close, just snap to the target
         if (Vector3.Distance(startPosition, targetPosition) < 0.01f)
         {
-            transform.localPosition = targetPosition;
+            transform.position = targetPosition;
             yield break;
         }
 
         while (elapsedTime < moveDuration)
         {
-            transform.localPosition = Vector3.Lerp(startPosition, targetPosition, elapsedTime / moveDuration);
             elapsedTime += Time.deltaTime;
+            float t = elapsedTime / moveDuration;
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / moveDuration);
+
+            float rotationY = t * 180;
+            transform.localRotation = Quaternion.Euler(0, rotationY, 0);
+
+            if (t >= 0 && !isFlipped)
+            {
+                isFlipped = true;
+                SwapToFaceDown();
+            }
+
             yield return null;
         }
-        transform.localPosition = targetPosition;
+        transform.position = targetPosition;
+        Image discardPileImage = discardTransform.GetComponentInChildren<Image>(true);
+        if (discardPileImage != null)
+        {
+            discardPileImage.gameObject.SetActive(true);
+        }
     }
 
     public void PlayFancyAnimation(Transform target)
@@ -163,8 +173,8 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
         imageToSwirl.transform.SetParent(rootCanvas.transform, true);
         foodToDestroy = imageToSwirl.gameObject;
-        Vector3 bodyStartPos = rectTransform.localPosition;
-        Vector3 bodyEndPos = discardTransform.localPosition;
+        Vector3 bodyStartPos = rectTransform.position;
+        Vector3 bodyEndPos = discardTransform.position;
         float elapsed = 0f;
         isFlipped = false;
 
@@ -180,7 +190,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
             Vector3 linearPos = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
             float downwardDip = 4f * t * (1f - t) * arcHeight;
-            rectTransform.localPosition = linearPos + (Vector3.down * downwardDip);
+            rectTransform.position = linearPos + (Vector3.down * downwardDip);
 
             //flip
             float rotationY = t * 180f;
@@ -194,7 +204,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
             yield return null;
         }
 
-        rectTransform.localPosition = bodyEndPos;
+        rectTransform.position = bodyEndPos;
         yield return new WaitForSeconds(0.3f);
 
         // Food Image Swirl
@@ -219,6 +229,11 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         }
 
         imageToSwirl.transform.position = target.position;
+        Image discardPileImage = discardTransform.GetComponentInChildren<Image>(true);
+        if (discardPileImage != null)
+        {
+            discardPileImage.gameObject.SetActive(true);
+        }
     }
     //State Handlers
     private void HandleIdleState()

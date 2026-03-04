@@ -124,6 +124,15 @@ public class HandManager : MonoBehaviour
         selectedCards.Clear();
         publicDiscards.Clear();
         privateDiscards.Clear();
+
+        if (GameManager.Instance != null && GameManager.Instance.DiscardPileTransform != null)
+        {
+            Image discardPileImage = GameManager.Instance.DiscardPileTransform.GetComponentInChildren<Image>(true);
+            if (discardPileImage != null)
+            {
+                discardPileImage.gameObject.SetActive(false);
+            }
+        }
     }
 
     // Selection Methods
