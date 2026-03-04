@@ -107,16 +107,16 @@ public class HandManager : MonoBehaviour
         {
             if (chef.data.cardName == "Chef Matt")
             {
-                bool hasAce = cardsInHand.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.Ace);
-                if (!hasAce)
+                var newCards = cardsInHand.GetRange(cardsBeforeDrawCount, cardsDrawnCount);
+                if (!newCards.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.Ace))
                 {
                     triggerRedeal = true;
                 }
             }
             else if (chef.data.cardName == "Chef Ryan")
             {
-                bool hasKing = cardsInHand.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.King);
-                if (!hasKing)
+                var newCards = cardsInHand.GetRange(cardsBeforeDrawCount, cardsDrawnCount);
+                if (!newCards.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.King))
                 {
                     triggerRedeal = true;
                 }
@@ -139,7 +139,7 @@ public class HandManager : MonoBehaviour
             return;
         }
         redealCount = 0;
-
+        UpdateCardPositions();
         // Sort according to preference
         if (sortPreference == SortType.Rank)
         {
@@ -219,10 +219,23 @@ public class HandManager : MonoBehaviour
     // Updater
     private void UpdateCardPositions()
     {
-        
-        float totalWidth = (cardsInHand.Count - 1) * cardSpacing;
-        float startX = -totalWidth / 2;
-        for (int i = 0; i < cardsInHand.Count; i++)
+        int cardCount = cardsInHand.Count;
+        if (cardCount == 0) return;
+
+        float maxWidth = 1600f;
+        float defaultSpacing = 250f;
+        float chefAreaWidth = GameManager.Instance.progressionManager.activeChefs.Count * defaultSpacing;
+        float currentSpacing = defaultSpacing;
+        float totalNeededWidth = (cardCount - 1) * defaultSpacing;
+        float availableHandSpace = maxWidth - chefAreaWidth;
+
+        if (totalNeededWidth > availableHandSpace) currentSpacing = availableHandSpace / (cardCount - 1);
+
+      
+        float actualWidth = (cardCount - 1) * currentSpacing;
+        float startX = (-actualWidth / 2) + (chefAreaWidth /2);
+
+        for (int i = 0; i < cardCount; i++)
         {
             Vector3 targetPosition = new Vector3(startX + i * cardSpacing, 0, 0);
             cardsInHand[i].transform.localPosition = targetPosition;
