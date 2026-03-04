@@ -94,6 +94,20 @@ public class ShiftManager : MonoBehaviour
         RefreshUI();
     }
 
+    public void EndShift()
+    {
+        var activeChefs = GameManager.Instance.progressionManager.activeChefs;
+        for (int i = activeChefs.Count - 1; i >= 0; i--)
+        {
+            activeChefs[i].remainingShifts--;
+            if (activeChefs[i].remainingShifts <= 0)
+            {
+                if (activeChefs[i].data.effectType == ChefEffectType.GameSpeed) Time.timeScale = 1f;
+                activeChefs.RemoveAt(i);
+            }
+        }
+    }
+
     public void UpdatePreviousScores()
     {
         progressionManager .prevPrevPrevScore = progressionManager.prevPrevScore;

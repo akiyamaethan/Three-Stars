@@ -15,23 +15,49 @@ public class ScoreManager : MonoBehaviour
     
     public int CalculateScore(List<CardInstance> hand, out HandEvaluator.HandRank rank)
     {
+        var prog = GameManager.Instance.progressionManager;
+
         rank = handEvaluator.EvaluateHand(hand);
         if (rank == HandEvaluator.HandRank.None)
         {
             return 0;
         }
-
+        float multiplier = GetHandMult(rank, prog);
         float totalPips = 0;
-        var prog = GameManager.Instance.progressionManager;
+
         foreach (var card in hand)
         {
             float basePips = GetBasePips(card.cardData.cardRank);
+            foreach (var chef in prog.activeChefs)
+            {
+                if (chef.data.effectType == ChefEffectType.AdditivePips)
+                {
+                    if (card.cardData.cardSuit == chef.data.targetSuit)
+                    {
+                        basePips += chef.data.effectMagnitude;
+                    }
+                    if (card.cardData.cardRank < chef.data.targetRankHigh && card.cardData.cardRank > chef.data.targetRankLow)
+                    {
+                        basePips += chef.data.effectMagnitude;
+                    }
+                }
+            }
             basePips += prog.GetSuitBonusPips(card.cardData.cardSuit);
             basePips += prog.GetRankBonusPips(card.cardData.cardRank);
             totalPips += basePips;
         }
 
-        float multiplier = GetHandMult(rank, prog);
+        foreach (var chef in prog.activeChefs)
+        {
+            if (chef.data.effectType == ChefEffectType.Multiplier)
+            {
+                if (rank == chef.data.targetHand || chef.data.targetHand == HandEvaluator.HandRank.None)
+                {
+                    multiplier *= chef.data.effectMagnitude;
+                }
+            }
+        }
+
         int finalScore = Mathf.RoundToInt(totalPips * multiplier);
 
         prog.RegisterPlay(hand);

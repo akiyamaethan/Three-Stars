@@ -34,7 +34,10 @@ public class HandManager : MonoBehaviour
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
 
-    //Enum
+    // Misc
+    private int redealCount = 0;
+
+    //Enums
     public enum SortType
     {
         Rank,
@@ -78,10 +81,12 @@ public class HandManager : MonoBehaviour
     }
     public void DrawToFullHand()
     {
+        int cardsBeforeDrawCount = cardsInHand.Count;
+        int targetHandSize = GameManager.Instance.progressionManager.handSize;
         // Draw the cards
         int iterations = 0; //infinit loop protection
         int maxIterations = 100;
-        while (cardsInHand.Count < GameManager.Instance.progressionManager.handSize && iterations < maxIterations)
+        while (cardsInHand.Count < targetHandSize && iterations < maxIterations)
         {
             int countBefore = cardsInHand.Count;
             deckManager.DrawCard(this);
@@ -93,6 +98,47 @@ public class HandManager : MonoBehaviour
                 break;
             }
         }
+
+        int cardsDrawnCount = cardsInHand.Count - cardsBeforeDrawCount;
+        if (cardsDrawnCount <= 0) return;
+        bool triggerRedeal = false;
+
+        foreach (var chef in GameManager.Instance.progressionManager.activeChefs)
+        {
+            if (chef.data.cardName == "Chef Matt")
+            {
+                bool hasAce = cardsInHand.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.Ace);
+                if (!hasAce)
+                {
+                    triggerRedeal = true;
+                }
+            }
+            else if (chef.data.cardName == "Chef Ryan")
+            {
+                bool hasKing = cardsInHand.Any(c => c.GetComponent<CardDisplay>().cardInstance.cardData.cardRank == PlayingCard.CardRank.King);
+                if (!hasKing)
+                {
+                    triggerRedeal = true;
+                }
+            }
+        }
+
+        if (triggerRedeal && redealCount < 2)
+        {
+            redealCount++;
+            for (int i = 0; i < cardsDrawnCount; i++)
+            {
+                int lastIndex = cardsInHand.Count - 1;
+                GameObject cardToDestroy = cardsInHand[lastIndex];
+                cardsInHand.RemoveAt(lastIndex);
+                Destroy(cardToDestroy);
+            }
+            deckManager.RewindAndPartialShuffle(cardsDrawnCount);
+
+            DrawToFullHand();
+            return;
+        }
+        redealCount = 0;
 
         // Sort according to preference
         if (sortPreference == SortType.Rank)

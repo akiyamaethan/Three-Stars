@@ -39,6 +39,24 @@ public class DeckManager : MonoBehaviour
         handManager.AddCardToHand(cardToDraw);
         currentCardIndex++;
     }
+    
+    public void RewindAndPartialShuffle(int count)
+    {
+        if (count < 1) return;
+
+        currentCardIndex -= count;
+        if (currentCardIndex < 0) currentCardIndex = 0;
+
+        int n = deck.Count;
+        for (int i = currentCardIndex; i < n; i++)
+        {
+            int k = _rng.Next(i, n);
+
+            CardInstance temp = deck[k];
+            deck[k] = deck[i];
+            deck[i] = temp;
+        }
+    }
 
     public void Shuffle()
     {

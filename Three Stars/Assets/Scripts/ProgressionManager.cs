@@ -12,6 +12,17 @@ namespace ThreeStars
         public int discards = 3;
         public int shiftNumber = 0;
         public int playerBalance = 0;
+
+        // Chef vars
+        [System.Serializable]
+        public class ActiveChef
+        {
+            public ChefCard data;
+            public int remainingShifts;
+        }
+        public int chefSlots = 2;
+        public List<ActiveChef> activeChefs = new List<ActiveChef>();
+
         //used to determine next score threshold
         public int prevScore = 0;
         public int prevPrevScore = 0;
@@ -317,6 +328,16 @@ namespace ThreeStars
                 PlayingCard.CardRank.Ace => aceRankLevel,
                 _ => 1
             };
+        }
+
+        // Chef Card Helpers
+        public void AddChef(ChefCard data)
+        {
+            if (activeChefs.Count < chefSlots)
+            {
+                activeChefs.Add(new ActiveChef { data = data, remainingShifts = data.durability });
+                if (data.effectType == ChefEffectType.GameSpeed) Time.timeScale = data.effectMagnitude;
+            }
         }
     }
 }
