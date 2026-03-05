@@ -237,7 +237,7 @@ public class HandManager : MonoBehaviour
 
         for (int i = 0; i < cardCount; i++)
         {
-            Vector3 targetPosition = new Vector3(startX + i * cardSpacing, 0, 0);
+            Vector3 targetPosition = new Vector3(startX + i * currentSpacing, 0, 0);
             cardsInHand[i].transform.localPosition = targetPosition;
 
             CardMovement cardMovement = cardsInHand[i].GetComponent<CardMovement>();
