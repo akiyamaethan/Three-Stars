@@ -65,8 +65,9 @@ public class ShiftManager : MonoBehaviour
             {
                 progressionManager.playerBalance += 10;
             }
-                progressionManager.shiftNumber++;
+            progressionManager.shiftNumber++;
             UpdatePreviousScores();
+            EndShift();
             GameManager.Instance.SwitchToShopState();
         }
         if (plays == 0 && score < scoreThreshold)
