@@ -11325,6 +11325,18 @@ PrefabInstance:
       value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 6248017068476905346, guid: 8b373841aea876442ad5e0090715fb2f, type: 3}
+      propertyPath: ChefTransform
+      value: 
+      objectReference: {fileID: 441107462}
+    - target: {fileID: 6248017068476905346, guid: 8b373841aea876442ad5e0090715fb2f, type: 3}
+      propertyPath: chefCardPrefab
+      value: 
+      objectReference: {fileID: 8026178266619572407, guid: 9b9620615c8b4724988fe27848139575, type: 3}
+    - target: {fileID: 6248017068476905346, guid: 8b373841aea876442ad5e0090715fb2f, type: 3}
+      propertyPath: UpgradeTransform
+      value: 
+      objectReference: {fileID: 1512770500}
+    - target: {fileID: 6248017068476905346, guid: 8b373841aea876442ad5e0090715fb2f, type: 3}
       propertyPath: upgadeCardPrefab
       value: 
       objectReference: {fileID: 8026178266619572407, guid: 0584458eb5d15eb47b3aa9be423ee94a, type: 3}

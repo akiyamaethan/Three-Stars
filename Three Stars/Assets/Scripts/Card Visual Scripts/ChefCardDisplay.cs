@@ -47,4 +47,13 @@ public class ChefCardDisplay : MonoBehaviour
 
     }
 
+    public void UpdateShopDisplay()
+    {
+        cardBackground.color = getRarityColor(cardData.rarity);
+        cardBackground.sprite = cardData.cardBackground;
+        cardName.text = cardData.cardName;
+        cardDescription.text = cardData.cardText;
+        remainingShifts.text = "Free";
+    }
+
 }

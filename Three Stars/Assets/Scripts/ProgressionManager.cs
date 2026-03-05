@@ -331,13 +331,16 @@ namespace ThreeStars
         }
 
         // Chef Card Helpers
-        public void AddChef(ChefCard data)
+        public bool AddChef(ChefCard data)
         {
             if (activeChefs.Count < chefSlots)
             {
                 activeChefs.Add(new ActiveChef { data = data, remainingShifts = data.durability });
                 if (data.effectType == ChefEffectType.GameSpeed) Time.timeScale = data.effectMagnitude;
+                return true;
             }
+            Debug.Log("Chef slots full");
+            return false;
         }
     }
 }
