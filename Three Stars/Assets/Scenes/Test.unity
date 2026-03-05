@@ -4943,8 +4943,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckManager: {fileID: 0}
-  cardPrefab: {fileID: 8026178266619572407, guid: 16fc6ec015c1b514bbf2ca4de4f7a89f, type: 3}
   handEvaluator: {fileID: 0}
+  cardPrefab: {fileID: 8026178266619572407, guid: 16fc6ec015c1b514bbf2ca4de4f7a89f, type: 3}
+  chefCardPrefab: {fileID: 8026178266619572407, guid: 9b9620615c8b4724988fe27848139575, type: 3}
   handTransform: {fileID: 559969583}
   foodTransform1: {fileID: 210520483}
   foodTransform2: {fileID: 1655950316}

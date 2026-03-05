@@ -9,8 +9,11 @@ public class HandManager : MonoBehaviour
 {
     //Managers
     public DeckManager deckManager;
-    public GameObject cardPrefab; 
     public HandEvaluator handEvaluator;
+
+    //Prefabs
+    public GameObject cardPrefab;
+    public GameObject chefCardPrefab;
 
     //Visual Variables
     public Transform handTransform;
@@ -30,6 +33,7 @@ public class HandManager : MonoBehaviour
     public List<CardMovement> selectedCards = new List<CardMovement>();
     public List<GameObject> publicDiscards = new List<GameObject>(); // Used for visuals
     public List<GameObject> privateDiscards = new List<GameObject>(); // USE THIS FOR DISCARD MODAL
+    private List<GameObject> activeChefVisuals = new List<GameObject>();
 
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
@@ -165,6 +169,10 @@ public class HandManager : MonoBehaviour
         {
             Destroy(card);
         }
+        foreach (GameObject chef in activeChefVisuals)
+        {
+            Destroy(chef);
+        }
 
         cardsInHand.Clear();
         selectedCards.Clear();
@@ -216,29 +224,70 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    // Updater
+    // Updaters
+
+    private void UpdateChefPositions()
+    {
+        foreach (GameObject chefGO in activeChefVisuals)
+        {
+            Destroy(chefGO);
+        }
+        activeChefVisuals.Clear();
+
+        var activeChefs = GameManager.Instance.progressionManager.activeChefs;
+        foreach (var chef in activeChefs)
+        {
+            GameObject chefGO = Instantiate(chefCardPrefab, handTransform);
+            ChefCardDisplay display = chefGO.GetComponent<ChefCardDisplay>();
+
+            if (display != null)
+            {
+                display.cardData = chef.data;
+                display.UpdateCardDisplay(chef.remainingShifts);
+            }
+
+            activeChefVisuals.Add(chefGO);
+        }
+    }
     private void UpdateCardPositions()
     {
+        UpdateChefPositions();
+
         int cardCount = cardsInHand.Count;
+        int chefCount = activeChefVisuals.Count;
         if (cardCount == 0) return;
 
         float maxWidth = 1600f;
         float defaultSpacing = 250f;
-        float chefAreaWidth = GameManager.Instance.progressionManager.activeChefs.Count * defaultSpacing;
-        float currentSpacing = defaultSpacing;
-        float totalNeededWidth = (cardCount - 1) * defaultSpacing;
+
+        float chefAreaWidth = chefCount * defaultSpacing;
         float availableHandSpace = maxWidth - chefAreaWidth;
+        float currentSpacing = defaultSpacing;
 
-        if (totalNeededWidth > availableHandSpace) currentSpacing = availableHandSpace / (cardCount - 1);
+        if (cardCount > 1)
+        {
+            float totalNeededWidth = (cardCount - 1) * defaultSpacing;
+            if (totalNeededWidth > availableHandSpace) currentSpacing = availableHandSpace / (cardCount - 1);
+        }
 
-      
-        float actualWidth = (cardCount - 1) * currentSpacing;
-        float startX = (-actualWidth / 2) + (chefAreaWidth /2);
+        float totalWidth = chefAreaWidth + (cardCount > 0 ? (cardCount - 1) * currentSpacing : 0);
+        float startX = (-totalWidth / 2);
 
+        // Position chef cards
+        for (int i = 0; i < chefCount; i++)
+        {
+            Vector3 pos = new Vector3(startX + (i * defaultSpacing) , 0, 0);
+            activeChefVisuals[i].transform.localPosition = pos;
+        }
+
+        // Position normal cards
+        float cardStartX = startX + chefAreaWidth;
         for (int i = 0; i < cardCount; i++)
         {
-            Vector3 targetPosition = new Vector3(startX + i * currentSpacing, 0, 0);
+            Vector3 targetPosition = new Vector3(cardStartX + (i * currentSpacing), 0, 0);
             cardsInHand[i].transform.localPosition = targetPosition;
+            // the rightmost card is rendered last
+            cardsInHand[i].transform.SetAsLastSibling();
 
             CardMovement cardMovement = cardsInHand[i].GetComponent<CardMovement>();
             if (cardMovement != null)
