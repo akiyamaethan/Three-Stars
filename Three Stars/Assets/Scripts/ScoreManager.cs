@@ -27,24 +27,7 @@ public class ScoreManager : MonoBehaviour
 
         foreach (var card in hand)
         {
-            float basePips = GetBasePips(card.cardData.cardRank);
-            foreach (var chef in prog.activeChefs)
-            {
-                if (chef.data.effectType == ChefEffectType.AdditivePips)
-                {
-                    if (card.cardData.cardSuit == chef.data.targetSuit)
-                    {
-                        basePips += chef.data.effectMagnitude;
-                    }
-                    if (card.cardData.cardRank < chef.data.targetRankHigh && card.cardData.cardRank > chef.data.targetRankLow)
-                    {
-                        basePips += chef.data.effectMagnitude;
-                    }
-                }
-            }
-            basePips += prog.GetSuitBonusPips(card.cardData.cardSuit);
-            basePips += prog.GetRankBonusPips(card.cardData.cardRank);
-            totalPips += basePips;
+            totalPips += GetCardPips(card);
         }
 
         foreach (var chef in prog.activeChefs)
@@ -66,6 +49,30 @@ public class ScoreManager : MonoBehaviour
 
     }
 
+    public float GetCardPips(CardInstance card)
+    {
+        var prog = GameManager.Instance.progressionManager;
+        float pips = GetBasePips(card.cardData.cardRank);
+
+        foreach (var chef in prog.activeChefs)
+        {
+            if (chef.data.effectType == ChefEffectType.AdditivePips)
+            {
+                if (card.cardData.cardSuit == chef.data.targetSuit)
+                {
+                    pips += chef.data.effectMagnitude;
+                }
+                if (card.cardData.cardRank < chef.data.targetRankHigh && card.cardData.cardRank > chef.data.targetRankLow)
+                {
+                    pips += chef.data.effectMagnitude;
+                }
+            }
+        }
+
+        pips += prog.GetSuitBonusPips(card.cardData.cardSuit);
+        pips += prog.GetRankBonusPips(card.cardData.cardRank);
+        return pips;
+    }
     public int GetBasePips(PlayingCard.CardRank rank)
     {
         return rank switch

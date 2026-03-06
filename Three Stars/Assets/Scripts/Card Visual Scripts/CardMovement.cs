@@ -154,13 +154,13 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         }
     }
 
-    public void PlayFancyAnimation(Transform target)
+    public void PlayFancyAnimation(Transform target, float pips, GameObject popupPrefab)
     {
         TransitionToPlayedState();
-        StartCoroutine(FancyAnimation(target));
+        StartCoroutine(FancyAnimation(target, pips, popupPrefab));
     }
 
-    private IEnumerator FancyAnimation(Transform target)
+    private IEnumerator FancyAnimation(Transform target, float pips, GameObject popupPrefab)
     {
         // Setup
         cardDisplay = GetComponent<CardDisplay>();
@@ -205,6 +205,24 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         }
 
         rectTransform.position = bodyEndPos;
+
+        // Pip Popup Logic
+        if (popupPrefab != null)
+        {
+            Canvas popupRootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+            GameObject popup = Instantiate(popupPrefab, rectTransform.position + new Vector3(0, 20f, 0), Quaternion.identity, popupRootCanvas.transform);
+
+            popup.transform.localScale = Vector3.one;
+            popup.transform.SetAsLastSibling();
+
+            var popupText = popup.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (popupText != null)
+            {
+                popupText.text = "+" + pips.ToString();
+            }
+            Destroy(popup, 0.5f);
+        }
+
         yield return new WaitForSeconds(0.3f);
 
         // Food Image Swirl

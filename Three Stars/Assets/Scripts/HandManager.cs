@@ -8,12 +8,13 @@ using System.Collections;
 public class HandManager : MonoBehaviour
 {
     //Managers
-    public DeckManager deckManager;
-    public HandEvaluator handEvaluator;
+    [HideInInspector] public DeckManager deckManager;
+    [HideInInspector] public HandEvaluator handEvaluator;
 
     //Prefabs
     public GameObject cardPrefab;
     public GameObject chefCardPrefab;
+    public GameObject pipPopupPrefab;
 
     //Visual Variables
     public Transform handTransform;
@@ -57,17 +58,19 @@ public class HandManager : MonoBehaviour
     }
 
     // Coroutines
-    private IEnumerator PlayHandRoutine(List<CardMovement> cardsToMove, Transform[] foodTargets)
+    private IEnumerator PlayHandRoutine(List<CardMovement> cardsToMove, Transform[] foodTargets, List<float> cardPips, int finalScore, List<CardInstance> cardsToScore)
     {
         for (int i = 0; i < foodTargets.Length; i++)
         {
             publicDiscards.Add(cardsToMove[i].gameObject);
-            cardsToMove[i].PlayFancyAnimation(foodTargets[i]);
+            cardsToMove[i].PlayFancyAnimation(foodTargets[i], cardPips[i], pipPopupPrefab);
             cardsInHand.Remove(cardsToMove[i].gameObject);
         }
         selectedCards.Clear();
 
         yield return new WaitForSeconds(3.0f);
+
+        OnHandPlayed.Invoke(cardsToScore, finalScore);
         DrawToFullHand();
     }
 
@@ -309,21 +312,22 @@ public class HandManager : MonoBehaviour
         publicDiscards.Clear();
 
         List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
+        List<float> individualPips = new List<float>();
         List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject)); //this is the list of cards on the canvas
 
         foreach (CardMovement card in selectedCards)
         {
-            cardsToScore.Add(card.GetComponent<CardDisplay>().cardInstance);
+            var instance = card.GetComponent<CardDisplay>().cardInstance;
+            cardsToScore.Add(instance);
+            individualPips.Add(GameManager.Instance.scoreManager.GetCardPips(instance));
         }
 
         HandEvaluator.HandRank handRank;
         int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
-        OnHandPlayed?.Invoke(cardsToScore, finalScore);
-        Debug.Log($"Played hand with rank {handRank} for {finalScore} points!");
 
         //visually moves card to discard pile
         Transform[] foodTargets = {foodTransform1, foodTransform2, foodTransform3, foodTransform4};
-        StartCoroutine(PlayHandRoutine(cardsToMove, foodTargets));
+        StartCoroutine(PlayHandRoutine(cardsToMove, foodTargets, individualPips, finalScore, cardsToScore));
 
 
     }
