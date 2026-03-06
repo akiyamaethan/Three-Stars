@@ -65,6 +65,7 @@ public class HandManager : MonoBehaviour
             publicDiscards.Add(cardsToMove[i].gameObject);
             cardsToMove[i].PlayFancyAnimation(foodTargets[i], cardPips[i], pipPopupPrefab);
             cardsInHand.Remove(cardsToMove[i].gameObject);
+            yield return new WaitForSeconds(0.3f);
         }
         selectedCards.Clear();
 

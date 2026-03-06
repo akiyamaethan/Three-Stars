@@ -162,31 +162,61 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     private IEnumerator FancyAnimation(Transform target, float pips, GameObject popupPrefab)
     {
-        // Setup
+        // Setup for scale up + popup
         cardDisplay = GetComponent<CardDisplay>();
-        Image imageToSwirl = cardDisplay.foodImage;
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
         Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
-        imageToSwirl.transform.SetParent(rootCanvas.transform, true);
-        foodToDestroy = imageToSwirl.gameObject;
-        Vector3 bodyStartPos = rectTransform.position;
-        Vector3 bodyEndPos = discardTransform.position;
+        Vector3 startPos = rectTransform.position;
+        Vector3 peakPos = startPos + new Vector3(0, 10f, 0);
+        Vector3 startScale = rectTransform.localScale;
+        Vector3 peakScale = startScale * 1.1f;
+
+        float popDuration = 1.3f;
         float elapsed = 0f;
-        isFlipped = false;
 
-        // Parameters
-        float arcHeight = 1200f;
-        float bodyDuration = 0.5f;
+        if (popupPrefab != null)
+        {
+            GameObject popup = Instantiate(popupPrefab, peakPos + new Vector3(0, 100f, 0 ), Quaternion.identity, rootCanvas.transform);
+            popup.transform.localScale = Vector3.one;
+            popup.transform.SetAsLastSibling();
 
-        // Card body detach and fly away
-        while (elapsed < bodyDuration)
+            var popupText = popup.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (popupText != null) popupText.text = "+" + pips.ToString();
+
+            Destroy(popup, 1.2f);
+        }
+
+        while (elapsed < popDuration)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / bodyDuration;
+            float t = elapsed / popDuration;
+            float bounceT = Mathf.Sin(t * Mathf.PI);
+
+            rectTransform.position = Vector3.Lerp(startPos, peakPos, bounceT);
+            rectTransform.localScale = Vector3.Lerp(startScale, peakScale, bounceT);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // Set up for image/card split
+        Image foodImage = cardDisplay.foodImage;
+        foodImage.transform.SetParent(rootCanvas.transform, true);
+        foodToDestroy = foodImage.gameObject;
+
+        Vector3 bodyStartPos = rectTransform.position;
+        Vector3 bodyEndPos = discardTransform.position;
+        Vector3 foodStartPos = foodImage.transform.position;
+
+        float arcHeight = 800f;
+        float moveDuration = 0.7f;
+        isFlipped = false;
+        elapsed = 0f;
+
+        while (elapsed < moveDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / moveDuration;
+            float easeT = t * t * (3f - 2f * t);
 
             Vector3 linearPos = Vector3.Lerp(bodyStartPos, bodyEndPos, t);
             float downwardDip = 4f * t * (1f - t) * arcHeight;
@@ -200,53 +230,15 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
                 isFlipped = true;
                 SwapToFaceDown();
             }
-            canvasGroup.alpha = 1f;
+
+            foodImage.transform.position = Vector3.Lerp(foodStartPos, target.position, easeT);
+
             yield return null;
         }
 
         rectTransform.position = bodyEndPos;
+        foodImage.transform.position = target.position;
 
-        // Pip Popup Logic
-        if (popupPrefab != null)
-        {
-            Canvas popupRootCanvas = GetComponentInParent<Canvas>().rootCanvas;
-            GameObject popup = Instantiate(popupPrefab, rectTransform.position + new Vector3(0, 20f, 0), Quaternion.identity, popupRootCanvas.transform);
-
-            popup.transform.localScale = Vector3.one;
-            popup.transform.SetAsLastSibling();
-
-            var popupText = popup.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-            if (popupText != null)
-            {
-                popupText.text = "+" + pips.ToString();
-            }
-            Destroy(popup, 0.5f);
-        }
-
-        yield return new WaitForSeconds(0.3f);
-
-        // Food Image Swirl
-        float swirldDuration = 1.25f;
-        elapsed = 0f;
-        Vector3 swirlStartPos = imageToSwirl.transform.position;
-        float startRadius = 200f;
-        float swirlSpeed = 10f;
-
-        while (elapsed < swirldDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / swirldDuration;
-            float easeT = t * t * (3f - 2f * t);
-
-            float currentRadius = Mathf.Lerp(startRadius, 0, easeT);
-            float angle = elapsed * swirlSpeed;
-            Vector3 offset = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * currentRadius;
-
-            imageToSwirl.transform.position = Vector3.Lerp(swirlStartPos, target.position, easeT) + offset; ;
-            yield return null;
-        }
-
-        imageToSwirl.transform.position = target.position;
         Image discardPileImage = discardTransform.GetComponentInChildren<Image>(true);
         if (discardPileImage != null)
         {
