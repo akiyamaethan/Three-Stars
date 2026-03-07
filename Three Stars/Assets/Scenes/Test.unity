@@ -5483,6 +5483,10 @@ MonoBehaviour:
   cardPrefab: {fileID: 8026178266619572407, guid: 16fc6ec015c1b514bbf2ca4de4f7a89f, type: 3}
   chefCardPrefab: {fileID: 8026178266619572407, guid: 9b9620615c8b4724988fe27848139575, type: 3}
   pipPopupPrefab: {fileID: 1198018599829757444, guid: ce86739b7519a0f47846c15eccf734a8, type: 3}
+  outerPanelPrefab: {fileID: 6106917726433574486, guid: db6fa4e1be3f5c4488967bc445337eb5, type: 3}
+  innerPanelPrefab: {fileID: 246081266074714451, guid: 3aff27d0936d37b469dd381a74d437b6, type: 3}
+  handDisplayPrefab: {fileID: 8289044394140962932, guid: 30dbb123010f3cc4aa6b7adccb8b6ecc, type: 3}
+  multDisplayPrefab: {fileID: 7633963898746493514, guid: 9ddaba96bcd4bbb48971ca041c697c64, type: 3}
   handTransform: {fileID: 559969583}
   foodTransform1: {fileID: 210520483}
   foodTransform2: {fileID: 1655950316}

@@ -14,7 +14,12 @@ public class HandManager : MonoBehaviour
     //Prefabs
     public GameObject cardPrefab;
     public GameObject chefCardPrefab;
+    [Header("Scoring Animation Prefabs")]
     public GameObject pipPopupPrefab;
+    public GameObject outerPanelPrefab;
+    public GameObject innerPanelPrefab;
+    public GameObject handDisplayPrefab;
+    public GameObject multDisplayPrefab;
 
     //Visual Variables
     public Transform handTransform;
@@ -80,11 +85,81 @@ public class HandManager : MonoBehaviour
         }
         selectedCards.Clear();
 
-        yield return new WaitForSeconds(3.0f);
-        UIManager.instance.UpdateScoreXMultMult(multiplier);
+        yield return new WaitForSeconds(3f);
 
+        yield return StartCoroutine(AnimateScoringPanels(rank, multiplier));
+        UIManager.instance.UpdateScoreXMultMult(multiplier);
         OnHandPlayed.Invoke(cardsToScore, finalScore);
         DrawToFullHand();
+    }
+
+    private IEnumerator AnimateScoringPanels(HandEvaluator.HandRank rank, float mult)
+    {
+        Canvas canvas = GameManager.Instance.gameplayCanvas;
+
+        GameObject outer = Instantiate(outerPanelPrefab, canvas.transform);
+        GameObject inner = Instantiate(innerPanelPrefab, canvas.transform);
+        GameObject handObj = Instantiate(handDisplayPrefab, canvas.transform);
+        GameObject multObj = Instantiate(multDisplayPrefab, canvas.transform);
+
+        RectTransform outerRT = outer.GetComponent<RectTransform>();
+        RectTransform innerRT = inner.GetComponent<RectTransform>();
+        RectTransform handRT = handObj.GetComponent<RectTransform>();
+        RectTransform multRT = multObj.GetComponent<RectTransform>();
+
+        handObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = rank.ToString();
+        multObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = $"Multiplier: {mult}";
+
+        float slideDuration = 0.2f;
+        Vector2 centerPos = Vector2.zero;
+        Vector2 handTargetPos = new Vector2 (0, 50);
+        Vector2 multTargetPos = new Vector2 (0, -50);
+
+        float screenWidth = Screen.width;
+        Vector2 leftPanelPos = new Vector2(-screenWidth, 0);
+        Vector2 leftHandPos = new Vector2(-screenWidth, handTargetPos.y);
+        Vector2 leftMultPos = new Vector2 (-screenWidth, multTargetPos.y);
+
+        outerRT.position = leftPanelPos;
+        innerRT.position = leftPanelPos;
+        handRT.position = leftHandPos;
+        multRT.position = leftMultPos;
+
+        StartCoroutine(LerpAnchoredPosition(outerRT, centerPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(innerRT, centerPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(handRT, handTargetPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(multRT, multTargetPos, slideDuration));
+        yield return new WaitForSeconds(3.1f);
+
+        StartCoroutine(LerpAnchoredPosition(outerRT, leftPanelPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(innerRT, leftPanelPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(handRT, leftHandPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(LerpAnchoredPosition(multRT, leftMultPos, slideDuration));
+        yield return new WaitForSeconds(0.1f);
+
+        Destroy(inner);
+        Destroy(outer);
+        Destroy(handObj);
+        Destroy(multObj);
+    }
+
+    private IEnumerator LerpAnchoredPosition(RectTransform target, Vector2 targetPos, float duration)
+    {
+        Vector2 startPos = target.anchoredPosition;
+        float elapsed = 0f;
+        while ( elapsed < duration)
+        {
+            target.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        target.anchoredPosition = targetPos;
     }
 
     // Hand Manipulation Methods
