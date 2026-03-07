@@ -60,16 +60,28 @@ public class HandManager : MonoBehaviour
     // Coroutines
     private IEnumerator PlayHandRoutine(List<CardMovement> cardsToMove, Transform[] foodTargets, List<float> cardPips, int finalScore, List<CardInstance> cardsToScore)
     {
+        HandEvaluator.HandRank rank = GameManager.Instance.scoreManager.handEvaluator.EvaluateHand(cardsToScore);
+        float multiplier = GameManager.Instance.scoreManager.GetTotalMult(cardsToScore, rank);
+        float runningPipTotal = 0;
+
+        UIManager.instance.UpdateScoreXMultMult(0f);
+        UIManager.instance.UpdateScoreXMultScore(0f);
+
         for (int i = 0; i < foodTargets.Length; i++)
         {
             publicDiscards.Add(cardsToMove[i].gameObject);
             cardsToMove[i].PlayFancyAnimation(foodTargets[i], cardPips[i], pipPopupPrefab);
             cardsInHand.Remove(cardsToMove[i].gameObject);
+
+            runningPipTotal += cardPips[i];
+            UIManager.instance.UpdateScoreXMultScore(runningPipTotal);
+
             yield return new WaitForSeconds(0.3f);
         }
         selectedCards.Clear();
 
         yield return new WaitForSeconds(3.0f);
+        UIManager.instance.UpdateScoreXMultMult(multiplier);
 
         OnHandPlayed.Invoke(cardsToScore, finalScore);
         DrawToFullHand();

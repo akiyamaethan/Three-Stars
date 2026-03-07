@@ -22,23 +22,12 @@ public class ScoreManager : MonoBehaviour
         {
             return 0;
         }
-        float multiplier = GetHandMult(rank, prog);
+        float multiplier = GetTotalMult(hand, rank);
         float totalPips = 0;
 
         foreach (var card in hand)
         {
             totalPips += GetCardPips(card);
-        }
-
-        foreach (var chef in prog.activeChefs)
-        {
-            if (chef.data.effectType == ChefEffectType.Multiplier)
-            {
-                if (rank == chef.data.targetHand || chef.data.targetHand == HandEvaluator.HandRank.None)
-                {
-                    multiplier *= chef.data.effectMagnitude;
-                }
-            }
         }
 
         int finalScore = Mathf.RoundToInt(totalPips * multiplier);
@@ -72,6 +61,25 @@ public class ScoreManager : MonoBehaviour
         pips += prog.GetSuitBonusPips(card.cardData.cardSuit);
         pips += prog.GetRankBonusPips(card.cardData.cardRank);
         return pips;
+    }
+
+    public float GetTotalMult(List<CardInstance> hand, HandEvaluator.HandRank rank)
+    {
+        var prog = GameManager.Instance.progressionManager;
+        float multiplier = GetHandMult(rank, prog);
+
+        foreach (var chef in prog.activeChefs)
+        {
+            if (chef.data.effectType == ChefEffectType.Multiplier)
+            {
+                if (rank == chef.data.targetHand || chef.data.targetHand == HandEvaluator.HandRank.None)
+                {
+                    multiplier *= chef.data.effectMagnitude;
+                }
+            }
+        }
+
+        return multiplier;
     }
     public int GetBasePips(PlayingCard.CardRank rank)
     {
