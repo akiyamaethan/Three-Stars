@@ -2,24 +2,21 @@ using UnityEngine;
 
 public class CardModalController : MonoBehaviour
 {
-    [Header("Modal Root")]
+    [Header("References")]
     [SerializeField] private GameObject cardModalRoot;
-
-    [Header("Input")]
     [SerializeField] private KeyCode toggleKey = KeyCode.M;
 
-    private bool isOpen = false;
+    private CardModalUI cardModalUI;
 
-    void Start()
+    private void Awake()
     {
         if (cardModalRoot != null)
         {
-            cardModalRoot.SetActive(false);
-            isOpen = false;
+            cardModalUI = cardModalRoot.GetComponent<CardModalUI>();
         }
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(toggleKey))
         {
@@ -27,9 +24,29 @@ public class CardModalController : MonoBehaviour
         }
     }
 
-    private void ToggleModal()
+    public void ToggleModal()
     {
-        isOpen = !isOpen;
-        cardModalRoot.SetActive(isOpen);
+        if (cardModalRoot == null)
+        {
+            Debug.LogWarning("CardModalController: cardModalRoot is not assigned.");
+            return;
+        }
+
+        bool shouldOpen = !cardModalRoot.activeSelf;
+
+        if (shouldOpen && cardModalUI != null)
+        {
+            cardModalUI.Refresh();
+        }
+
+        cardModalRoot.SetActive(shouldOpen);
+    }
+
+    public void CloseModal()
+    {
+        if (cardModalRoot != null)
+        {
+            cardModalRoot.SetActive(false);
+        }
     }
 }
