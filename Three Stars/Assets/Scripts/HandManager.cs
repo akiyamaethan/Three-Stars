@@ -84,6 +84,7 @@ public class HandManager : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         selectedCards.Clear();
+        UpdateButtons();
 
         yield return new WaitForSeconds(3f);
 
@@ -155,11 +156,13 @@ public class HandManager : MonoBehaviour
         float elapsed = 0f;
         while ( elapsed < duration)
         {
-            target.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / duration);
+            if (target)
+                target.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        target.anchoredPosition = targetPos;
+        if (target)
+            target.anchoredPosition = targetPos;
     }
 
     // Hand Manipulation Methods
@@ -436,6 +439,7 @@ public class HandManager : MonoBehaviour
         });
 
         selectedCards.Clear();
+        UpdateButtons();
         DrawToFullHand();
     }
 
