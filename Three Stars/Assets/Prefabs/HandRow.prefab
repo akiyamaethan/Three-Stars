@@ -169,6 +169,7 @@ GameObject:
   - component: {fileID: 4851115378597560981}
   - component: {fileID: 6719959566259602735}
   - component: {fileID: 950625874412592015}
+  - component: {fileID: 9114114621962977521}
   m_Layer: 5
   m_Name: HandRow
   m_TagString: Untagged
@@ -297,6 +298,20 @@ MonoBehaviour:
   nameText: {fileID: 386233039500677949}
   levelText: {fileID: 0}
   bonusText: {fileID: 5335869698185891043}
+--- !u!114 &9114114621962977521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361494792580813024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f444a1f17ff27489b9d521f2e02233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previewController: {fileID: 0}
+  previewSprite: {fileID: 0}
 --- !u!1 &3152973679341978824
 GameObject:
   m_ObjectHideFlags: 0
