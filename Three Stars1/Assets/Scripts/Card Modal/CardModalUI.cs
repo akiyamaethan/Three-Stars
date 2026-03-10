@@ -12,8 +12,19 @@ public class CardModalUI : MonoBehaviour
     [SerializeField] private RectTransform rightContent;
     [SerializeField] private GameObject handRowPrefab;
 
+    [Header("Hover Preview")]
+    [SerializeField] private HandHoverPreviewController hoverController;
+    [SerializeField] private List<HandPreviewMapping> handPreviews = new();
+
     [Header("Optional")]
     [SerializeField] private bool refreshOnEnable = false;
+
+    [System.Serializable]
+    public struct HandPreviewMapping
+    {
+        public HandEvaluator.HandRank rank;
+        public Sprite previewSprite;
+    }
 
     private readonly List<GameObject> spawnedLeftRows = new();
     private readonly List<GameObject> spawnedRightRows = new();
@@ -29,6 +40,7 @@ public class CardModalUI : MonoBehaviour
     public void Refresh()
     {
         if (!ValidateReferences()) return;
+
         if (GameManager.Instance == null || GameManager.Instance.progressionManager == null)
         {
             Debug.LogWarning("CardModalUI: ProgressionManager is not available.");
@@ -126,23 +138,44 @@ public class CardModalUI : MonoBehaviour
     }
 
     private void PopulateRightHands()
-{
-    foreach (HandEvaluator.HandRank rank in System.Enum.GetValues(typeof(HandEvaluator.HandRank)))
     {
-        float mult = GetHandMultiplier(rank);
-        string handName = FormatHandName(rank);
-
-        CardRowUI row = Instantiate(handRowPrefab, rightContent).GetComponent<CardRowUI>();
-        if (row == null)
+        foreach (HandEvaluator.HandRank rank in System.Enum.GetValues(typeof(HandEvaluator.HandRank)))
         {
-            Debug.LogError("CardModalUI: handRowPrefab is missing CardRowUI.");
-            continue;
+            float mult = GetHandMultiplier(rank);
+            string handName = FormatHandName(rank);
+
+            CardRowUI row = Instantiate(handRowPrefab, rightContent).GetComponent<CardRowUI>();
+            if (row == null)
+            {
+                Debug.LogError("CardModalUI: handRowPrefab is missing CardRowUI.");
+                continue;
+            }
+
+            HandHoverTarget hoverTarget = row.GetComponent<HandHoverTarget>();
+            if (hoverTarget != null && hoverController != null)
+            {
+                Sprite previewSprite = GetPreviewSpriteForRank(rank);
+                hoverTarget.Setup(hoverController, previewSprite);
+            }
+
+            row.SetRow("", handName, "", FormatMultiplier(mult));
+            spawnedRightRows.Add(row.gameObject);
+        }
+    }
+
+    private Sprite GetPreviewSpriteForRank(HandEvaluator.HandRank rank)
+    {
+        foreach (HandPreviewMapping mapping in handPreviews)
+        {
+            if (mapping.rank == rank)
+            {
+                return mapping.previewSprite;
+            }
         }
 
-        row.SetRow("", handName, "", FormatMultiplier(mult));
-        spawnedRightRows.Add(row.gameObject);
+        Debug.LogWarning($"CardModalUI: No preview sprite assigned for hand rank {rank}.");
+        return null;
     }
-}
 
     private float GetHandMultiplier(HandEvaluator.HandRank rank)
     {
@@ -203,36 +236,36 @@ public class CardModalUI : MonoBehaviour
     }
 
     private string FormatHandName(HandEvaluator.HandRank rank)
-{
-    return rank switch
     {
-        HandEvaluator.HandRank.HighCard => "A la Carte",
-        HandEvaluator.HandRank.OnePair => "Pairing",
-        HandEvaluator.HandRank.TwoPair => "Split Plate",
-        HandEvaluator.HandRank.ThreeOfAKind => "Set",
-        HandEvaluator.HandRank.Straight => "Buffet",
-        HandEvaluator.HandRank.Flush => "Flight",
-        HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-        HandEvaluator.HandRank.StraightFlush => "Buffet Flight",
-        HandEvaluator.HandRank.RoyalFlush => "Grand Flight",
-        HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-        _ => rank.ToString()
-    };
+        return rank switch
+        {
+            HandEvaluator.HandRank.HighCard => "A la Carte",
+            HandEvaluator.HandRank.OnePair => "Pairing",
+            HandEvaluator.HandRank.TwoPair => "Split Plate",
+            HandEvaluator.HandRank.ThreeOfAKind => "Set",
+            HandEvaluator.HandRank.Straight => "Buffet",
+            HandEvaluator.HandRank.Flush => "Flight",
+            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
+            HandEvaluator.HandRank.StraightFlush => "Buffet Flight",
+            HandEvaluator.HandRank.RoyalFlush => "Grand Flight",
+            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
+            _ => rank.ToString()
+        };
 
-    //possible other hand names
-    //return rank switch
-    //    {
-    //        HandEvaluator.HandRank.HighCard => "A La Carte",
-    //        HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-    //        HandEvaluator.HandRank.OnePair => "Pairing",
-    //        HandEvaluator.HandRank.TwoPair => "Split Plate",
-    //        HandEvaluator.HandRank.ThreeOfAKind => "Set",
-    //        HandEvaluator.HandRank.Straight => "Chef's Sequence",
-    //        HandEvaluator.HandRank.Flush => "Single Origin",
-    //        HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-    //        HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
-    //        HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
-    //        _ => rank.ToString()
-    //    };
+        //possible other hand names
+        //return rank switch
+        //    {
+        //        HandEvaluator.HandRank.HighCard => "A La Carte",
+        //        HandEvaluator.HandRank.Rainbow => "Balanced Meal",
+        //        HandEvaluator.HandRank.OnePair => "Pairing",
+        //        HandEvaluator.HandRank.TwoPair => "Split Plate",
+        //        HandEvaluator.HandRank.ThreeOfAKind => "Set",
+        //        HandEvaluator.HandRank.Straight => "Chef's Sequence",
+        //        HandEvaluator.HandRank.Flush => "Single Origin",
+        //        HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
+        //        HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
+        //        HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
+        //        _ => rank.ToString()
+        //    };
     }
 }
