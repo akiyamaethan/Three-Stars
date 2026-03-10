@@ -218,5 +218,21 @@ public class CardModalUI : MonoBehaviour
         HandEvaluator.HandRank.Rainbow => "Balanced Meal",
         _ => rank.ToString()
     };
-}
+
+    //possible other hand names
+    //return rank switch
+    //    {
+    //        HandEvaluator.HandRank.HighCard => "A La Carte",
+    //        HandEvaluator.HandRank.Rainbow => "Balanced Meal",
+    //        HandEvaluator.HandRank.OnePair => "Pairing",
+    //        HandEvaluator.HandRank.TwoPair => "Split Plate",
+    //        HandEvaluator.HandRank.ThreeOfAKind => "Set",
+    //        HandEvaluator.HandRank.Straight => "Chef's Sequence",
+    //        HandEvaluator.HandRank.Flush => "Single Origin",
+    //        HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
+    //        HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
+    //        HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
+    //        _ => rank.ToString()
+    //    };
+    }
 }
