@@ -4,9 +4,16 @@ using UnityEngine;
 using ThreeStars;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class HandManager : MonoBehaviour
 {
+    //
+    // Hand Manager: Mainly manages hand visuals but also keeps references for the discard pile for other managers to use.
+    // Manages: hand representation on screen (including chef cards), sorting the hand, scoring animation, playing/discarding
+    // cards, adding/removing cards from the hand
+    //
+
     //Managers
     [HideInInspector] public DeckManager deckManager;
     [HideInInspector] public HandEvaluator handEvaluator;
@@ -21,6 +28,12 @@ public class HandManager : MonoBehaviour
     public GameObject handDisplayPrefab;
     public GameObject multDisplayPrefab;
 
+    //Plate Animation Settings
+    public Transform platesParent;
+    public float platesOffScreenY = 1200f;
+    public float platesOnScreenY = 70.13f;
+    public float platesMoveDuration = 0.5f;
+
     //Visual Variables
     public Transform handTransform;
     public Transform foodTransform1;
@@ -34,13 +47,19 @@ public class HandManager : MonoBehaviour
     public Button sortSuitButton = null;
     public SortType sortPreference = SortType.Rank;
 
+    [Header("Dish Score UI")]
+    public TextMeshProUGUI HandScoreText;
+    public GameObject HandScorePanel;
+    public CanvasGroup HandScoreCanvas;
+    public float fadeDuration = 5f;
+
     //Card Trackers
     public List<GameObject> cardsInHand = new List<GameObject>();
     public List<CardMovement> selectedCards = new List<CardMovement>();
     public List<GameObject> publicDiscards = new List<GameObject>(); // Used for visuals
     public List<GameObject> privateDiscards = new List<GameObject>(); // USE THIS FOR DISCARD MODAL
     private List<GameObject> activeChefVisuals = new List<GameObject>();
-
+    
     //Events
     public static event System.Action<List<CardInstance>, int> OnHandPlayed;
 
@@ -65,13 +84,31 @@ public class HandManager : MonoBehaviour
     // Coroutines
     private IEnumerator PlayHandRoutine(List<CardMovement> cardsToMove, Transform[] foodTargets, List<float> cardPips, int finalScore, List<CardInstance> cardsToScore)
     {
+        //Disable play and discard buttons
+        SetHighlightDiscardButton(false);
+        SetHighlightPlayButton(false);
+
+        //Lerp plate onto screen
+        yield return StartCoroutine(LerpPlates(true));
+
+        //Underneath the plate - enable the hand score display and set its value
+        if (HandScoreCanvas != null)
+        {
+            HandScoreCanvas.alpha = 1f;
+        }
+        if (HandScoreText != null)
+            HandScoreText.text = $"Dish Score: {finalScore}";
+
+        //Initialize variables for scoring animation
         HandEvaluator.HandRank rank = GameManager.Instance.scoreManager.handEvaluator.EvaluateHand(cardsToScore);
         float multiplier = GameManager.Instance.scoreManager.GetTotalMult(cardsToScore, rank);
         float runningPipTotal = 0;
 
+        //Reset score X mult UI component
         UIManager.instance.UpdateScoreXMultMult(0f);
         UIManager.instance.UpdateScoreXMultScore(0f);
 
+        //Foreach selected card, start its animation, add its pips to running total, and wait .03s
         for (int i = 0; i < foodTargets.Length; i++)
         {
             publicDiscards.Add(cardsToMove[i].gameObject);
@@ -83,12 +120,18 @@ public class HandManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.3f);
         }
+        //Clear selected cards, wait 3s
         selectedCards.Clear();
-        UpdateButtons();
-
         yield return new WaitForSeconds(3f);
 
+        //Activate panel animation
         yield return StartCoroutine(AnimateScoringPanels(rank, multiplier));
+
+        //Lerp plate off screen and fade score text
+        StartCoroutine(LerpPlates(false));
+        StartCoroutine(FadeDishScore());
+
+        //Update UI, notify other managers a hand was played, and reset the hand
         UIManager.instance.UpdateScoreXMultMult(multiplier);
         OnHandPlayed.Invoke(cardsToScore, finalScore);
         DrawToFullHand();
@@ -108,7 +151,7 @@ public class HandManager : MonoBehaviour
         RectTransform handRT = handObj.GetComponent<RectTransform>();
         RectTransform multRT = multObj.GetComponent<RectTransform>();
 
-        handObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = rank.ToString();
+        handObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = GetThemedHandName(rank);
         multObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = $"Multiplier: {mult}";
 
         float slideDuration = 0.2f;
@@ -133,7 +176,7 @@ public class HandManager : MonoBehaviour
         StartCoroutine(LerpAnchoredPosition(handRT, handTargetPos, slideDuration));
         yield return new WaitForSeconds(0.1f);
         StartCoroutine(LerpAnchoredPosition(multRT, multTargetPos, slideDuration));
-        yield return new WaitForSeconds(3.1f);
+        yield return new WaitForSeconds(2.1f);
 
         StartCoroutine(LerpAnchoredPosition(outerRT, leftPanelPos, slideDuration));
         yield return new WaitForSeconds(0.1f);
@@ -163,6 +206,39 @@ public class HandManager : MonoBehaviour
         }
         if (target)
             target.anchoredPosition = targetPos;
+    }
+
+    private IEnumerator LerpPlates(bool moveOnScreen)
+    {
+        float targetY = moveOnScreen ? platesOnScreenY : platesOffScreenY;
+        Vector3 startPos = platesParent.localPosition;
+        Vector3 endPos = new Vector3(startPos.x, targetY, startPos.z);
+        float elapsed = 0f;
+
+        while (elapsed < platesMoveDuration)
+        {
+            platesParent.localPosition = Vector3.Lerp(startPos, endPos, elapsed / platesMoveDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        platesParent.localPosition = endPos;
+    }
+
+    private IEnumerator FadeDishScore()
+    {
+        float startAlpha = 1f;
+        float endAlpha = 0f;
+        float elapsed = 0f;
+
+        while (elapsed < fadeDuration)
+        {
+            if (HandScoreCanvas)
+                HandScoreCanvas.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / fadeDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        if (HandScoreCanvas)
+            HandScoreCanvas.alpha = endAlpha;
     }
 
     // Hand Manipulation Methods
@@ -483,5 +559,24 @@ public class HandManager : MonoBehaviour
         {
             discardButton.interactable = false;
         }
+    }
+
+    // Misc
+    private string GetThemedHandName(HandEvaluator.HandRank rank)
+    {
+        return rank switch
+        { 
+            HandEvaluator.HandRank.HighCard => "A La Carte",
+            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
+            HandEvaluator.HandRank.OnePair => "Pairing",
+            HandEvaluator.HandRank.TwoPair => "Split Plate",
+            HandEvaluator.HandRank.ThreeOfAKind => "Set",
+            HandEvaluator.HandRank.Straight => "Chef's Sequence",
+            HandEvaluator.HandRank.Flush => "Single Origin",
+            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
+            HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
+            HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
+            _ => "Specialty"
+        };
     }
 }

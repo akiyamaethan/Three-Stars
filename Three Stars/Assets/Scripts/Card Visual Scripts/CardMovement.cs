@@ -239,6 +239,10 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         rectTransform.position = bodyEndPos;
         foodImage.transform.position = target.position;
 
+        foodImage.transform.SetParent(target, true);
+        //foodToDestroy = null;
+
+
         Image discardPileImage = discardTransform.GetComponentInChildren<Image>(true);
         if (discardPileImage != null)
         {
