@@ -5,7 +5,7 @@ namespace ThreeStars
 {
     public enum ChefEffectType
     {
-        AdditivePips, Multiplier, DrawModifier, GameSpeed, Special
+        AdditivePips, Multiplier, DrawModifier, GameSpeed, MultiplicativePips, Special
     }
 
     [CreateAssetMenu(fileName = "New Chef Card", menuName = "Chef Card")]

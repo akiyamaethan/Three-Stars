@@ -47,13 +47,18 @@ public class ScoreManager : MonoBehaviour
         {
             if (chef.data.effectType == ChefEffectType.AdditivePips)
             {
-                if (card.cardData.cardSuit == chef.data.targetSuit)
+                if (card.cardData.cardSuit == chef.data.targetSuit || 
+                    (card.cardData.cardRank <= chef.data.targetRankHigh && card.cardData.cardRank >= chef.data.targetRankLow))
                 {
                     pips += chef.data.effectMagnitude;
                 }
-                if (card.cardData.cardRank < chef.data.targetRankHigh && card.cardData.cardRank > chef.data.targetRankLow)
+            }
+            else if (chef.data.effectType == ChefEffectType.MultiplicativePips)
+            {
+                if (card.cardData.cardSuit == chef.data.targetSuit || 
+                    (card.cardData.cardRank <= chef.data.targetRankHigh && card.cardData.cardRank >= chef.data.targetRankLow))
                 {
-                    pips += chef.data.effectMagnitude;
+                    pips *= chef.data.effectMagnitude;
                 }
             }
         }

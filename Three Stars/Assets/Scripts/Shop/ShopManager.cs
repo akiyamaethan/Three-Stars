@@ -69,42 +69,52 @@ public class ShopManager : MonoBehaviour
     private void GenerateCards(int upgradeCount, int chefCount)
     {
         visibleUpgrades.Clear();
+        List<UpgradeCard> upgradePool = new List<UpgradeCard>(availableUpgrades);
+        Shuffle(upgradePool);
         List<GameObject> currentUpgrades = new List<GameObject>();
-        List<GameObject> currentChefs = new List<GameObject>();
+        int actualUpgradeCount = Mathf.Min(upgradeCount, upgradePool.Count);
 
-        // Generate Upgrades
-        for (int i = 0; i < upgradeCount; i++)
+        for (int i = 0; i < actualUpgradeCount; i++)
         {
-            UpgradeCard randomUpgrade = availableUpgrades[Random.Range(0, availableUpgrades.Count)];
+            UpgradeCard uniqueUpgrade = upgradePool[i];
             GameObject cardGO = Instantiate(upgradeCardPrefab, UpgradeTransform);
             currentUpgrades.Add(cardGO);
             visibleUpgrades.Add(cardGO);
 
             UpgradeCardDisplay cardDisplay = cardGO.GetComponent<UpgradeCardDisplay>();
-            cardDisplay.cardData = randomUpgrade;
+            cardDisplay.cardData = uniqueUpgrade;
             cardDisplay.UpdateCardDisplay();
 
             ShopCardInteraction interaction = cardGO.GetComponent<ShopCardInteraction>();
-            interaction.Setup(randomUpgrade, this, cardGO);
+            interaction.Setup(uniqueUpgrade, this, cardGO);
         }
         LayoutGroup(UpgradeTransform, currentUpgrades);
 
 
+        List<ChefCard> chefPool = new List<ChefCard>();
+        foreach(var chef in availableChefs)
+        {
+            bool alreadyOwned = progressionManager.activeChefs.Exists(a => a.data == chef);
+            if (!alreadyOwned) chefPool.Add(chef);
+        }
+        Shuffle(chefPool);
+        List<GameObject> currentChefs = new List<GameObject>();
+        int actualChefCount = Mathf.Min(chefCount, chefPool.Count);
         // Generate Chefs
-        for (int i = 0; i < chefCount; i++)
+        for (int i = 0; i < actualChefCount; i++)
         {
             if (availableChefs.Count == 0) break;
-            ChefCard randomChef = availableChefs[Random.Range(0, availableChefs.Count)];
+            ChefCard uniqueChef = chefPool[i];
             GameObject cardGO = Instantiate(chefCardPrefab, ChefTransform);
             currentChefs.Add(cardGO);
             visibleUpgrades.Add(cardGO);
 
             ChefCardDisplay chefCardDisplay = cardGO.GetComponent<ChefCardDisplay>();
-            chefCardDisplay.cardData = randomChef;
+            chefCardDisplay.cardData = uniqueChef;
             chefCardDisplay.UpdateShopDisplay();
 
             ShopChefCardInteraction interaction = cardGO.AddComponent<ShopChefCardInteraction>();
-            interaction.Setup(randomChef, this, cardGO);
+            interaction.Setup(uniqueChef, this, cardGO);
         }
         LayoutGroup(ChefTransform, currentChefs);
 
@@ -162,5 +172,18 @@ public class ShopManager : MonoBehaviour
         progressionManager.ApplyUpgrade(upgrade);
         Destroy(visual);
         OnShopUIUpdate?.Invoke();
+    }
+
+    private void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 }
