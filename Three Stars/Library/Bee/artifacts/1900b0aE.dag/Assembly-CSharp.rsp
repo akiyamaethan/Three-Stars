@@ -422,6 +422,7 @@
 "Assets/Scripts/Shop/ShopCardInteraction.cs"
 "Assets/Scripts/Shop/ShopChefCardInteraction.cs"
 "Assets/Scripts/Shop/ShopManager.cs"
+"Assets/Scripts/Sounds/SoundManager.cs"
 "Assets/Scripts/Title.cs"
 "Assets/Scripts/UI Managers/ShopUIManager.cs"
 "Assets/Scripts/UI Managers/UIManager.cs"

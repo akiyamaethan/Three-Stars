@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\HandManager.cs" />
     <Compile Include="Assets\Scripts\ProgressionManager.cs" />
     <Compile Include="Assets\Scripts\Card Modal\CardDatabase.cs" />
+    <Compile Include="Assets\Scripts\Sounds\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Shop\ShopManager.cs" />
     <Compile Include="Assets\Scripts\Card Data Scripts\UpgradeCard.cs" />
     <Compile Include="Assets\Scripts\Card Visual Scripts\CardMovement.cs" />

@@ -80,20 +80,39 @@ public class GameManager : MonoBehaviour
         return manager;
     }
 
-    public void SwitchToPlayState()
+public void SwitchToPlayState()
+{
+    Debug.Log("[GameManager] Switching to Play State.");
+
+    currentState = GameState.Playing;
+    gameplayCanvas.gameObject.SetActive(true);
+    shopCanvas.gameObject.SetActive(false);
+
+    if (SoundManager.Instance != null)
     {
-        currentState = GameState.Playing;
-        gameplayCanvas.gameObject.SetActive(true);
-        shopCanvas.gameObject.SetActive(false);
-        shiftManager.ResetShift();
+        SoundManager.Instance.PlayNextShift();
+        SoundManager.Instance.FadeBackToMusic();
+    }
+    else
+    {
+        Debug.LogWarning("[GameManager] SoundManager.Instance is null in SwitchToPlayState().");
     }
 
-    public void SwitchToShopState()
+    shiftManager.ResetShift();
+}
+
+public void SwitchToShopState()
+{
+    currentState = GameState.InShop;
+    gameplayCanvas.gameObject.SetActive(false);
+    shopCanvas.gameObject.SetActive(true);
+
+    if (SoundManager.Instance != null)
     {
-        currentState = GameState.InShop;
-        gameplayCanvas.gameObject.SetActive(false);
-        shopCanvas.gameObject.SetActive(true);
-        shopManager.OpenShop();
+        SoundManager.Instance.FadeToShopAmbience();
     }
+
+    shopManager.OpenShop();
+}
 }
 

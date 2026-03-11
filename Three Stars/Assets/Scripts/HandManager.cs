@@ -468,36 +468,36 @@ public class HandManager : MonoBehaviour
     }
 
     // Event Handlers
-    public void OnPlayButtonPressed()
+   public void OnPlayButtonPressed()
+{
+    if (selectedCards.Count != 4 || GameManager.Instance.shiftManager.plays < 1) return;
+
+    if (SoundManager.Instance != null)
+        SoundManager.Instance.PlayHand();
+
+    foreach (GameObject card in publicDiscards)
     {
-        if (selectedCards.Count != 4 || GameManager.Instance.shiftManager.plays < 1) return;
-
-        foreach(GameObject card in publicDiscards)
-        {
-            if (card != null) Destroy(card);
-        }
-        publicDiscards.Clear();
-
-        List<CardInstance> cardsToScore = new List<CardInstance>(); //this gets passed to the score manager
-        List<float> individualPips = new List<float>();
-        List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject)); //this is the list of cards on the canvas
-
-        foreach (CardMovement card in selectedCards)
-        {
-            var instance = card.GetComponent<CardDisplay>().cardInstance;
-            cardsToScore.Add(instance);
-            individualPips.Add(GameManager.Instance.scoreManager.GetCardPips(instance));
-        }
-
-        HandEvaluator.HandRank handRank;
-        int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
-
-        //visually moves card to discard pile
-        Transform[] foodTargets = {foodTransform1, foodTransform2, foodTransform3, foodTransform4};
-        StartCoroutine(PlayHandRoutine(cardsToMove, foodTargets, individualPips, finalScore, cardsToScore));
-
-
+        if (card != null) Destroy(card);
     }
+    publicDiscards.Clear();
+
+    List<CardInstance> cardsToScore = new List<CardInstance>();
+    List<float> individualPips = new List<float>();
+    List<CardMovement> cardsToMove = selectedCards.FindAll(card => cardsInHand.Contains(card.gameObject));
+
+    foreach (CardMovement card in selectedCards)
+    {
+        var instance = card.GetComponent<CardDisplay>().cardInstance;
+        cardsToScore.Add(instance);
+        individualPips.Add(GameManager.Instance.scoreManager.GetCardPips(instance));
+    }
+
+    HandEvaluator.HandRank handRank;
+    int finalScore = GameManager.Instance.scoreManager.CalculateScore(cardsToScore, out handRank);
+
+    Transform[] foodTargets = { foodTransform1, foodTransform2, foodTransform3, foodTransform4 };
+    StartCoroutine(PlayHandRoutine(cardsToMove, foodTargets, individualPips, finalScore, cardsToScore));
+}
 
     public void OnDiscardButtonPressed()
     {
@@ -513,6 +513,7 @@ public class HandManager : MonoBehaviour
             card.Discard();
             cardsInHand.Remove(card.gameObject);
         });
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayDiscard();
 
         selectedCards.Clear();
         UpdateButtons();
@@ -520,22 +521,34 @@ public class HandManager : MonoBehaviour
     }
 
     public void SortByRank()
-    {
-        cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardRank).ToList();
-        UpdateCardPositions();
-        sortPreference = SortType.Rank;
-        sortRankButton.interactable = false;
-        sortSuitButton.interactable = true;
-    }
+{
+    if (SoundManager.Instance != null)
+        SoundManager.Instance.PlayRankSuitClick();
 
-    public void SortBySuit()
-    {
-        cardsInHand = cardsInHand.OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardSuit).ToList();
-        UpdateCardPositions();
-        sortPreference = SortType.Suit;
-        sortRankButton.interactable = true;
-        sortSuitButton.interactable = false;
-    }
+    cardsInHand = cardsInHand
+        .OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardRank)
+        .ToList();
+
+    UpdateCardPositions();
+    sortPreference = SortType.Rank;
+    sortRankButton.interactable = false;
+    sortSuitButton.interactable = true;
+}
+
+public void SortBySuit()
+{
+    if (SoundManager.Instance != null)
+        SoundManager.Instance.PlayRankSuitClick();
+
+    cardsInHand = cardsInHand
+        .OrderBy(card => card.GetComponent<CardDisplay>().cardInstance.cardData.cardSuit)
+        .ToList();
+
+    UpdateCardPositions();
+    sortPreference = SortType.Suit;
+    sortRankButton.interactable = true;
+    sortSuitButton.interactable = false;
+}
 
     public void SetHighlightPlayButton(bool highlight)
     {
