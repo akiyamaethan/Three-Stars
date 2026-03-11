@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:UpgradeCard
   cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: Side Cards Gain +1 Bonus Pips
+  cardText: Side Cards Gain an Extra Point When Scored
   cardName: Extra Fat
   upgradeCategories: 0b000000
   effectMagnitude: 1

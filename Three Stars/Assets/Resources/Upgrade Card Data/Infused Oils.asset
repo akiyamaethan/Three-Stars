@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:UpgradeCard
   cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: Sauce Cards Gain +1 Bonus Pips
+  cardText: Sauce Cards Gain an Extra Point When Scored
   cardName: Infused Oils
   upgradeCategories: 0d000000
   effectMagnitude: 1

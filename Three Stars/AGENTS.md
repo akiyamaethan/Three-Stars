@@ -18,7 +18,7 @@ or guidance or simply say that you cannot complete the task.
 - Project name: Three Stars
 - Unity version: Unity 2022.3.62f2
 - Active game object:
-  - Name: Pause
+  - Name: 1920x1080-white-smoke-solid-color-background
   - Tag: Untagged
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

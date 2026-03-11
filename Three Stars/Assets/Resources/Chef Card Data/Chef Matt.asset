@@ -20,9 +20,10 @@ MonoBehaviour:
   targetRankHigh: 12
   targetSuit: 0
   targetHand: 0
-  cardBackground: {fileID: 0}
+  cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
   cardImage: {fileID: 0}
-  cardText: card text
-  description: description
+  cardText: Double Chance to Find Aces
+  description: Whenever you draw 1 or more cards, if there is no Ace in that batch
+    of drawn cards, draw another batch.
   effect: 
   rarity: 3

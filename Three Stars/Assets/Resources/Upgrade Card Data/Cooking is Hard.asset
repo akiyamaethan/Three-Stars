@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:UpgradeCard
   cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: A La Carte Gains +3 Mult
+  cardText: A La Carte Dishes Gain +3 Bonus Multiplier When Scored
   cardName: Cooking is Hard
   upgradeCategories: 04000000
   effectMagnitude: 3

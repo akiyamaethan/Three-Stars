@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:ThreeStars:UpgradeCard
   cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: Pair Gains +2 Mult
+  cardText: Pair Dishes Gain +2 Bonus Multiplier When Scored
   cardName: Connoisseur
   upgradeCategories: 00000000
   effectMagnitude: 2

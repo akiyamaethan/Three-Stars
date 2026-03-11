@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardBackground: {fileID: 21300000, guid: 4a3b1300c1b1667479bb1b09a0e1617b, type: 3}
   cardImage: {fileID: 0}
-  cardText: All Ranks and Suits Gain 1 Bonus Pip
+  cardText: All Ranks and Suits Gain 1 Bonus Point When Scored
   cardName: Chef's Kiss
   upgradeCategories: 0a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a000000
   effectMagnitude: 1
