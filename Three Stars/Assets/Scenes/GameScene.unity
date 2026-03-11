@@ -7531,6 +7531,8 @@ MonoBehaviour:
   cardRowPrefab: {fileID: 1361494792580813024, guid: c3b5409b06f768145b3e1a7f1fe37a0f, type: 3}
   rightContent: {fileID: 1049143502}
   handRowPrefab: {fileID: 1361494792580813024, guid: 3a0fa8540ba7e2a4b9d9daed19233c1a, type: 3}
+  hoverController: {fileID: 0}
+  handPreviews: []
   refreshOnEnable: 0
 --- !u!1 &1882959370
 GameObject:
@@ -8376,7 +8378,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098836511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f383ca024d7e50344b3e191f5ddc45d9, type: 3}
+  m_Script: {fileID: 11500000, guid: c090c5d9dc0d5ab4683fc3ee6f3d9816, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pauseCanvas: {fileID: 1739685512}
