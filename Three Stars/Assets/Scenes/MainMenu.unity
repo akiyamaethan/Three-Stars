@@ -695,7 +695,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: A Balatro-inspired cooking card game
+  m_text: A Balatro-inspired cooking game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d3e4b56990afe145aa4a6f00466f5ce, type: 2}
   m_sharedMaterial: {fileID: 2905888116046210778, guid: 8d3e4b56990afe145aa4a6f00466f5ce, type: 2}
