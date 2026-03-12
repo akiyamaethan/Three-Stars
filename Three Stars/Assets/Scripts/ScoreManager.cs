@@ -45,6 +45,17 @@ public class ScoreManager : MonoBehaviour
 
         foreach (var chef in prog.activeChefs)
         {
+            if (chef.data.effectType == ChefEffectType.PipMultiplier)
+            {
+                if (card.cardData.cardRank >= chef.data.targetRankLow && card.cardData.cardRank <= chef.data.targetRankHigh)
+                {
+                    pips *= chef.data.effectMagnitude;
+                }
+            }
+        }
+
+        foreach (var chef in prog.activeChefs)
+        {
             if (chef.data.effectType == ChefEffectType.AdditivePips)
             {
                 if (card.cardData.cardSuit == chef.data.targetSuit)
@@ -67,6 +78,22 @@ public class ScoreManager : MonoBehaviour
     {
         var prog = GameManager.Instance.progressionManager;
         float multiplier = GetHandMult(rank, prog);
+
+        foreach (var chef in prog.activeChefs)
+        {
+            if (chef.data.effectType == ChefEffectType.SuitCountMultiplier)
+            {
+                int count = 0;
+                foreach (var card in hand)
+                {
+                    if (card.cardData.cardSuit == chef.data.targetSuit)
+                    {
+                        count++;
+                    }
+                }
+                multiplier += count * chef.data.effectMagnitude;
+            }
+        }
 
         foreach (var chef in prog.activeChefs)
         {

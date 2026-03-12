@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Rat in a Hat
   effectType: 1
-  effectMagnitude: 3
+  effectMagnitude: 2
   durability: 2
   targetRankLow: 0
   targetRankHigh: 0
   targetSuit: 0
   targetHand: 4
-  cardBackground: {fileID: 0}
+  cardBackground: {fileID: 21300000, guid: af9a2b2dcbfa4894397b9e4841dd40c6, type: 3}
   cardImage: {fileID: 0}
-  cardText: card text
+  cardText: Split Plate gains 2 Multiplier
   description: description
   effect: 
   rarity: 0

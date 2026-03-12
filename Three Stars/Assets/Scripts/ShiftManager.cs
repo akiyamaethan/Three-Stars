@@ -127,22 +127,31 @@ public class ShiftManager : MonoBehaviour
         }
         else
         {
+            float rawThreshold;
             float newScoreMult = possibleNextRoundScoreMults[Random.Range(0, possibleNextRoundScoreMults.Length)];
             if (debugMode) Debug.Log($"Previous score: {prevScore}, new score multiplier: {newScoreMult}");
 
+            if (prevScore > GameManager.Instance.progressionManager.prevPrevScore * 2)
+            {
+                //Special Case: Scored more than twice previouis round
+                rawThreshold = (prevScore + GameManager.Instance.progressionManager.prevScore) / 2;
+                scoreThreshold = Mathf.RoundToInt(rawThreshold / 100) * 100;
+                return;
+            }
+
             if (shiftNumber < 10)
             {
-                float rawThreshold = prevScore * newScoreMult;
+                rawThreshold = prevScore * newScoreMult;
                 scoreThreshold = Mathf.RoundToInt(rawThreshold / 10f) * 10; //rounds score to nearest 10
             }
             else if (shiftNumber > 9 && shiftNumber < 20)
             {
-                float rawThreshold = prevScore * newScoreMult;
+                rawThreshold = prevScore * newScoreMult;
                 scoreThreshold = Mathf.RoundToInt(rawThreshold / 100) * 100; //nearest 100
             }
             else if (shiftNumber > 19)
             {
-                float rawThreshold = prevScore * newScoreMult;
+                rawThreshold = prevScore * newScoreMult;
                 scoreThreshold = Mathf.RoundToInt(rawThreshold / 1000) * 1000; //nearest 1000
             }
             if (debugMode) Debug.Log($"Shift: {shiftNumber}. New score threshold: {scoreThreshold}");

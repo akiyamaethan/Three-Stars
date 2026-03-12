@@ -578,7 +578,7 @@ public void SortBySuit()
     // Misc
     private string GetThemedHandName(HandEvaluator.HandRank rank)
     {
-        return rank switch
+/*        return rank switch
         { 
             HandEvaluator.HandRank.HighCard => "A La Carte",
             HandEvaluator.HandRank.Rainbow => "Balanced Meal",
@@ -591,6 +591,20 @@ public void SortBySuit()
             HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
             HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
             _ => "Specialty"
+        };*/
+        return rank switch
+        {
+            HandEvaluator.HandRank.HighCard => "A la Carte",
+            HandEvaluator.HandRank.OnePair => "Pairing",
+            HandEvaluator.HandRank.TwoPair => "Split Plate",
+            HandEvaluator.HandRank.ThreeOfAKind => "Set",
+            HandEvaluator.HandRank.Straight => "Buffet",
+            HandEvaluator.HandRank.Flush => "Flight",
+            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
+            HandEvaluator.HandRank.StraightFlush => "Buffet Flight",
+            HandEvaluator.HandRank.RoyalFlush => "Grand Flight",
+            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
+            _ => rank.ToString()
         };
     }
 }

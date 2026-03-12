@@ -72,42 +72,62 @@ public class ShopManager : MonoBehaviour
         List<GameObject> currentUpgrades = new List<GameObject>();
         List<GameObject> currentChefs = new List<GameObject>();
 
+        // Shuffle available cards to ensure uniqueness and randomness
+        List<UpgradeCard> shuffledUpgrades = new List<UpgradeCard>(availableUpgrades);
+        Shuffle(shuffledUpgrades);
+        List<ChefCard> shuffledChefs = new List<ChefCard>(availableChefs);
+        Shuffle(shuffledChefs);
+
         // Generate Upgrades
-        for (int i = 0; i < upgradeCount; i++)
+        int actualUpgradeCount = Mathf.Min(upgradeCount, shuffledUpgrades.Count);
+        for (int i = 0; i < actualUpgradeCount; i++)
         {
-            UpgradeCard randomUpgrade = availableUpgrades[Random.Range(0, availableUpgrades.Count)];
+            UpgradeCard selectedUpgrade = shuffledUpgrades[i];
             GameObject cardGO = Instantiate(upgradeCardPrefab, UpgradeTransform);
             currentUpgrades.Add(cardGO);
             visibleUpgrades.Add(cardGO);
 
             UpgradeCardDisplay cardDisplay = cardGO.GetComponent<UpgradeCardDisplay>();
-            cardDisplay.cardData = randomUpgrade;
+            cardDisplay.cardData = selectedUpgrade;
             cardDisplay.UpdateCardDisplay();
 
             ShopCardInteraction interaction = cardGO.GetComponent<ShopCardInteraction>();
-            interaction.Setup(randomUpgrade, this, cardGO);
+            interaction.Setup(selectedUpgrade, this, cardGO);
         }
         LayoutGroup(UpgradeTransform, currentUpgrades);
 
 
         // Generate Chefs
-        for (int i = 0; i < chefCount; i++)
+        int actualChefCount = Mathf.Min(chefCount, shuffledChefs.Count);
+        for (int i = 0; i < actualChefCount; i++)
         {
-            if (availableChefs.Count == 0) break;
-            ChefCard randomChef = availableChefs[Random.Range(0, availableChefs.Count)];
+            ChefCard selectedChef = shuffledChefs[i];
             GameObject cardGO = Instantiate(chefCardPrefab, ChefTransform);
             currentChefs.Add(cardGO);
             visibleUpgrades.Add(cardGO);
 
             ChefCardDisplay chefCardDisplay = cardGO.GetComponent<ChefCardDisplay>();
-            chefCardDisplay.cardData = randomChef;
+            chefCardDisplay.cardData = selectedChef;
             chefCardDisplay.UpdateShopDisplay();
 
             ShopChefCardInteraction interaction = cardGO.AddComponent<ShopChefCardInteraction>();
-            interaction.Setup(randomChef, this, cardGO);
+            interaction.Setup(selectedChef, this, cardGO);
         }
         LayoutGroup(ChefTransform, currentChefs);
 
+    }
+
+    private void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 
     public void PurchaseChef(ChefCard chef, GameObject visual)
