@@ -141,6 +141,8 @@ public class CardModalUI : MonoBehaviour
     {
         foreach (HandEvaluator.HandRank rank in System.Enum.GetValues(typeof(HandEvaluator.HandRank)))
         {
+            if (rank == HandEvaluator.HandRank.None) continue;
+
             float mult = GetHandMultiplier(rank);
             string handName = FormatHandName(rank);
 
@@ -165,6 +167,8 @@ public class CardModalUI : MonoBehaviour
 
     private Sprite GetPreviewSpriteForRank(HandEvaluator.HandRank rank)
     {
+        if (rank == HandEvaluator.HandRank.None) return null;
+
         foreach (HandPreviewMapping mapping in handPreviews)
         {
             if (mapping.rank == rank)
