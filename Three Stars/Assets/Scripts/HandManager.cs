@@ -77,6 +77,7 @@ public class HandManager : MonoBehaviour
     {
         this.deckManager = dm;
         this.handEvaluator = he;
+        ClearHand();
         SetHighlightDiscardButton(false);
         SetHighlightPlayButton(false);
     }

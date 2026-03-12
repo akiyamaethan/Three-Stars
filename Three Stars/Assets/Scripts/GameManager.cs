@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -29,21 +30,15 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeManagers();
-        }
+        Instance = this;
+        InitializeManagers();
     }
+
     private void Start()
     {
         SwitchToPlayState();
     }
+
     // Initializer
     private void InitializeManagers()
     {
@@ -52,13 +47,20 @@ public class GameManager : MonoBehaviour
         scoreManager = GetOrLoadManager<ScoreManager>("Prefabs/Score Manager");
         shiftManager = GetOrLoadManager<ShiftManager>("Prefabs/Shift Manager");
         shopManager = GetOrLoadManager<ShopManager>("Prefabs/Shop Manager");
+
         handManager = FindAnyObjectByType<HandManager>();
         HandEvaluator handEvaluator = FindAnyObjectByType<HandEvaluator>();
 
-        handManager.Initialize(deckManager, handEvaluator);
-        shiftManager.Initialize(handManager, deckManager, progressionManager);
-
-        deckManager.InitializeDeck();
+        if (handManager != null && handEvaluator != null)
+        {
+            handManager.Initialize(deckManager, handEvaluator);
+            shiftManager.Initialize(handManager, deckManager, progressionManager);
+            deckManager.InitializeDeck();
+        }
+        else
+        {
+            Debug.LogWarning("Could not find a handmanager or evaluator in scene");
+        }
     }
 
     private T GetOrLoadManager<T>(string path) where T : MonoBehaviour
