@@ -87,6 +87,7 @@ public class ShiftManager : MonoBehaviour
         deckManager.Shuffle();
         handManager.ClearHand();
         handManager.DrawToFullHand();
+        handManager.UpdateSelectedHandUI();
         score = 0;
         shiftNumber = progressionManager.shiftNumber;
         discards = progressionManager.discards;

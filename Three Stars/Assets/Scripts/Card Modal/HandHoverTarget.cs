@@ -5,18 +5,20 @@ public class HandHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     [SerializeField] private HandHoverPreviewController previewController;
     [SerializeField] private Sprite previewSprite;
+    private string handDescription;
 
-    public void Setup(HandHoverPreviewController controller, Sprite sprite)
+    public void Setup(HandHoverPreviewController controller, Sprite sprite, string description)
     {
         previewController = controller;
         previewSprite = sprite;
+        handDescription = description;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (previewController != null && previewSprite != null)
         {
-            previewController.ShowPreview(previewSprite);
+            previewController.ShowPreview(previewSprite, handDescription);
         }
     }
 
@@ -26,5 +28,10 @@ public class HandHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             previewController.HidePreview();
         }
+    }
+
+    private void OnDisable()
+    {
+        if (previewController != null ) { previewController.HidePreview(); }
     }
 }

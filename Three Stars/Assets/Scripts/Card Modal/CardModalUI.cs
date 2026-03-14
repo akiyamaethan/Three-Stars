@@ -13,7 +13,7 @@ public class CardModalUI : MonoBehaviour
     [SerializeField] private GameObject handRowPrefab;
 
     [Header("Hover Preview")]
-    [SerializeField] private HandHoverPreviewController hoverController;
+    [SerializeField] public HandHoverPreviewController hoverController;
     [SerializeField] private List<HandPreviewMapping> handPreviews = new();
 
     [Header("Optional")]
@@ -85,6 +85,10 @@ public class CardModalUI : MonoBehaviour
 
     private void ClearSpawnedRows()
     {
+        if (hoverController != null)
+        {
+            hoverController.HidePreview();
+        }
         foreach (var row in spawnedLeftRows)
         {
             if (row != null) Destroy(row);
@@ -139,12 +143,24 @@ public class CardModalUI : MonoBehaviour
 
     private void PopulateRightHands()
     {
-        foreach (HandEvaluator.HandRank rank in System.Enum.GetValues(typeof(HandEvaluator.HandRank)))
+        var displayOrder = new List<HandEvaluator.HandRank>
         {
-            if (rank == HandEvaluator.HandRank.None) continue;
+            HandEvaluator.HandRank.RoyalFlush,
+            HandEvaluator.HandRank.StraightFlush,
+            HandEvaluator.HandRank.FourOfAKind,
+            HandEvaluator.HandRank.Flush,
+            HandEvaluator.HandRank.Straight,
+            HandEvaluator.HandRank.ThreeOfAKind,
+            HandEvaluator.HandRank.TwoPair,
+            HandEvaluator.HandRank.OnePair,
+            HandEvaluator.HandRank.Rainbow,
+            HandEvaluator.HandRank.HighCard,
 
+        };
+        foreach (HandEvaluator.HandRank rank in displayOrder)
+        { 
             float mult = GetHandMultiplier(rank);
-            string handName = FormatHandName(rank);
+            string handName = HandEvaluator.GetThemedHandName(rank);
 
             CardRowUI row = Instantiate(handRowPrefab, rightContent).GetComponent<CardRowUI>();
             if (row == null)
@@ -157,7 +173,12 @@ public class CardModalUI : MonoBehaviour
             if (hoverTarget != null && hoverController != null)
             {
                 Sprite previewSprite = GetPreviewSpriteForRank(rank);
-                hoverTarget.Setup(hoverController, previewSprite);
+                string description = GetHandDescription(rank);
+                hoverTarget.Setup(hoverController, previewSprite, description);
+            }
+            else if (hoverTarget == null)
+            {
+                Debug.LogWarning("Missing hover target");
             }
 
             row.SetRow("", handName, "", FormatMultiplier(mult));
@@ -239,37 +260,21 @@ public class CardModalUI : MonoBehaviour
         };
     }
 
-    private string FormatHandName(HandEvaluator.HandRank rank)
+    private string GetHandDescription(HandEvaluator.HandRank rank)
     {
         return rank switch
         {
-            HandEvaluator.HandRank.HighCard => "A la Carte",
-            HandEvaluator.HandRank.OnePair => "Pairing",
-            HandEvaluator.HandRank.TwoPair => "Split Plate",
-            HandEvaluator.HandRank.ThreeOfAKind => "Set",
-            HandEvaluator.HandRank.Straight => "Buffet",
-            HandEvaluator.HandRank.Flush => "Flight",
-            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-            HandEvaluator.HandRank.StraightFlush => "Buffet Flight",
-            HandEvaluator.HandRank.RoyalFlush => "Grand Flight",
-            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-            _ => rank.ToString()
+            HandEvaluator.HandRank.HighCard => "Dish that satisfies no other dish requirements",
+            HandEvaluator.HandRank.OnePair => "Two ingredients of the same rank",
+            HandEvaluator.HandRank.TwoPair => "Two sets of two ingredients with the same rank",
+            HandEvaluator.HandRank.ThreeOfAKind => "Three ingredients of the same rank",
+            HandEvaluator.HandRank.Straight => "Four ingredients whose ranks form a sequence",
+            HandEvaluator.HandRank.Flush => "Four ingredients of the same suit",
+            HandEvaluator.HandRank.FourOfAKind => "Four ingredients of the same rank",
+            HandEvaluator.HandRank.StraightFlush => "Dish that satisfies both Buffet and Flight requirements",
+            HandEvaluator.HandRank.RoyalFlush => "J, Q, K, A of the same suit",
+            HandEvaluator.HandRank.Rainbow => "One ingredient of each suit",
+            _=> ""
         };
-
-        //possible other hand names
-        //return rank switch
-        //    {
-        //        HandEvaluator.HandRank.HighCard => "A La Carte",
-        //        HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-        //        HandEvaluator.HandRank.OnePair => "Pairing",
-        //        HandEvaluator.HandRank.TwoPair => "Split Plate",
-        //        HandEvaluator.HandRank.ThreeOfAKind => "Set",
-        //        HandEvaluator.HandRank.Straight => "Chef's Sequence",
-        //        HandEvaluator.HandRank.Flush => "Single Origin",
-        //        HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-        //        HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
-        //        HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
-        //        _ => rank.ToString()
-        //    };
     }
 }

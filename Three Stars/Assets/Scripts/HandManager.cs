@@ -152,7 +152,7 @@ public class HandManager : MonoBehaviour
         RectTransform handRT = handObj.GetComponent<RectTransform>();
         RectTransform multRT = multObj.GetComponent<RectTransform>();
 
-        handObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = GetThemedHandName(rank);
+        handObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = HandEvaluator.GetThemedHandName(rank);
         multObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = $"Multiplier: {mult}";
 
         float slideDuration = 0.2f;
@@ -350,6 +350,8 @@ public class HandManager : MonoBehaviour
         publicDiscards.Clear();
         privateDiscards.Clear();
 
+        UpdateSelectedHandUI();
+
         if (GameManager.Instance != null && GameManager.Instance.DiscardPileTransform != null)
         {
             Image discardPileImage = GameManager.Instance.DiscardPileTransform.GetComponentInChildren<Image>(true);
@@ -372,6 +374,7 @@ public class HandManager : MonoBehaviour
             selectedCards.Add(card);
         }
         UpdateButtons();
+        UpdateSelectedHandUI();
     }
 
     public void UpdateButtons()
@@ -576,35 +579,39 @@ public void SortBySuit()
     }
 
     // Misc
-    private string GetThemedHandName(HandEvaluator.HandRank rank)
+    public void UpdateSelectedHandUI()
     {
-/*        return rank switch
-        { 
-            HandEvaluator.HandRank.HighCard => "A La Carte",
-            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-            HandEvaluator.HandRank.OnePair => "Pairing",
-            HandEvaluator.HandRank.TwoPair => "Split Plate",
-            HandEvaluator.HandRank.ThreeOfAKind => "Set",
-            HandEvaluator.HandRank.Straight => "Chef's Sequence",
-            HandEvaluator.HandRank.Flush => "Single Origin",
-            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-            HandEvaluator.HandRank.StraightFlush => "Single Origin Sequence",
-            HandEvaluator.HandRank.RoyalFlush => "Grand Buffet",
-            _ => "Specialty"
-        };*/
-        return rank switch
+        if (UIManager.instance == null) return;
+
+        if (selectedCards.Count == 0)
         {
-            HandEvaluator.HandRank.HighCard => "A la Carte",
-            HandEvaluator.HandRank.OnePair => "Pairing",
-            HandEvaluator.HandRank.TwoPair => "Split Plate",
-            HandEvaluator.HandRank.ThreeOfAKind => "Set",
-            HandEvaluator.HandRank.Straight => "Buffet",
-            HandEvaluator.HandRank.Flush => "Flight",
-            HandEvaluator.HandRank.FourOfAKind => "Perfect Meal",
-            HandEvaluator.HandRank.StraightFlush => "Buffet Flight",
-            HandEvaluator.HandRank.RoyalFlush => "Grand Flight",
-            HandEvaluator.HandRank.Rainbow => "Balanced Meal",
-            _ => rank.ToString()
-        };
+            UIManager.instance.UpdateScoreXMultScore(0);
+            UIManager.instance.UpdateScoreXMultMult(0);
+            UIManager.instance.UpdateHandRank(HandEvaluator.HandRank.None);
+            return;
+        }
+
+        List<CardInstance> cardsToScore = new List<CardInstance>();
+        float totalPips = 0;
+
+        foreach (CardMovement card in selectedCards)
+        {
+            var instance = card.GetComponent<CardDisplay>().cardInstance;
+            cardsToScore.Add(instance);
+            totalPips += GameManager.Instance.scoreManager.GetCardPips(instance);
+        }
+
+        HandEvaluator.HandRank rank = HandEvaluator.HandRank.None;
+        float multiplier = 0;
+
+        if (selectedCards.Count == 4)
+        {
+            rank = GameManager.Instance.scoreManager.handEvaluator.EvaluateHand(cardsToScore);
+            multiplier = GameManager.Instance.scoreManager.GetTotalMult(cardsToScore, rank);
+        }
+
+        UIManager.instance.UpdateScoreXMultScore(totalPips);
+        UIManager.instance.UpdateScoreXMultMult(multiplier);
+        UIManager.instance.UpdateHandRank(rank);
     }
 }

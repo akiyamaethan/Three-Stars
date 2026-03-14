@@ -53,6 +53,24 @@ public class HandEvaluator : MonoBehaviour
 
     // Helper Functions:
 
+    public static string GetThemedHandName(HandRank rank)
+    {
+        return rank switch
+        {
+            HandRank.HighCard => "A la Carte",
+            HandRank.OnePair => "Pairing",
+            HandRank.TwoPair => "Split Plate",
+            HandRank.ThreeOfAKind => "Set",
+            HandRank.Straight => "Buffet",
+            HandRank.Flush => "Flight",
+            HandRank.FourOfAKind => "Perfect Meal",
+            HandRank.StraightFlush => "Buffet Flight",
+            HandRank.RoyalFlush => "Grand Flight",
+            HandRank.Rainbow => "Balanced Meal",
+            _ => rank.ToString()
+        };
+    }
+
     private bool IsRoyalFlush(List<CardInstance> hand)
     {
         var ranks = new HashSet<PlayingCard.CardRank>();

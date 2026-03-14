@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
     [Header("Score X Mult")]
     public TextMeshProUGUI handScoreText;
     public TextMeshProUGUI multText;
+    public TextMeshProUGUI HandRankText;
 
     private void Awake()
     {
@@ -69,6 +70,22 @@ public class UIManager : MonoBehaviour
                 StopCoroutine(scoreScaleCoroutine);
             }
             scoreScaleCoroutine = StartCoroutine(LerpScale(multText.rectTransform, 1.1f, 0.1f));
+        }
+    }
+
+    public void UpdateHandRank(HandEvaluator.HandRank rank)
+    {
+        if (HandRankText != null)
+        {
+            if (rank == HandEvaluator.HandRank.None)
+            {
+                HandRankText.gameObject.SetActive(false);
+            }
+            else
+            {
+                HandRankText.gameObject.SetActive(true);
+                HandRankText.text = HandEvaluator.GetThemedHandName(rank);
+            }
         }
     }
 

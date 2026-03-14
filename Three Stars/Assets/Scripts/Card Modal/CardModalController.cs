@@ -47,6 +47,11 @@ public class CardModalController : MonoBehaviour
         if (cardModalRoot != null)
         {
             cardModalRoot.SetActive(false);
+
+            if (cardModalUI != null && cardModalUI.hoverController != null)
+            {
+                cardModalUI.hoverController.HidePreview();
+            }
         }
     }
 }
