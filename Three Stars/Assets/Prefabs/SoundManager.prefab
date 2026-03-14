@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1480520521267942808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8887443551054763104}
+  - component: {fileID: 4682765045013399852}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8887443551054763104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480520521267942808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4682765045013399852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480520521267942808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c9c482ad9303749aa86cbbc70b61a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicSource: {fileID: 0}
+  ambienceSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  backgroundTracks:
+  - {fileID: 8300000, guid: 0e4c64cbf249e9c499de4a4191e85204, type: 3}
+  - {fileID: 8300000, guid: 710dc50c052d08747a62435018117495, type: 3}
+  - {fileID: 8300000, guid: 36ff7096398d6764985cfbb05c86c25e, type: 3}
+  playMusicOnStart: 1
+  combinedAmbienceLong: {fileID: 8300000, guid: a89a353a28218d24797818d5c84058a2, type: 3}
+  musicVolume: 0.35
+  ambienceVolume: 0.12
+  fadeDuration: 1.75
+  sfxVolume: 0.6
+  startupSfxBlockTime: 0.25
+  clickRankSuit: {fileID: 8300000, guid: 0b247d4aec182ba4fb418c560deabdc2, type: 3}
+  editedBowlTossing: {fileID: 8300000, guid: 991891268b1bc114087b44dd26600e58, type: 3}
+  editedEthanCutting: {fileID: 8300000, guid: 204a826a3e889a24b97f0ccb40ba5a15, type: 3}
+  editedShortSizzle: {fileID: 8300000, guid: c31e696cea9e2c04c904f1edda7f5015, type: 3}
+  editedBurgerDown: {fileID: 8300000, guid: 2ac9dcb0c95c92c4d9bb95d0ad139768, type: 3}
