@@ -71,4 +71,27 @@ public class PauseMenu : MonoBehaviour
     {
         Screen.fullScreen = !Screen.fullScreen;
     }
+
+    public void ToggleGrayscale()
+    {
+        if (AccessibilityFilterManager.Instance != null)
+        {
+            AccessibilityFilterManager.Instance.ToggleGrayscale();
+        }
+    }
+
+    public void ToggleHighContrast()
+    {
+        if (AccessibilityFilterManager.Instance != null)
+        {
+            AccessibilityFilterManager.Instance.ToggleHighContrast();
+        }
+    }
+    public void TurnOffAccessibilityFilters()
+    {
+        if (AccessibilityFilterManager.Instance != null)
+        {
+            AccessibilityFilterManager.Instance.TurnOffAllFilters();
+        }
+    }
 }
