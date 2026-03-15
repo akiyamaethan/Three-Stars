@@ -20,6 +20,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     public CardDisplay cardDisplay;
     private GameObject foodToDestroy;
     private bool isFlipped = false;
+    private CardHoverEffect hoverEffect;
 
     // Colors
     private Color hoverGlowColor = Color.grey;
@@ -41,6 +42,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         originalScale = rectTransform.localScale;
         originalPosition = rectTransform.localPosition;
         originalRotation = rectTransform.localRotation;
+        hoverEffect = GetComponent<CardHoverEffect>();
     }
 
     void Update()
@@ -57,6 +59,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
                 HandleSelectedState();
                 break;
             case 3: // Played
+                if (hoverEffect != null) hoverEffect.isSuppressed = true;
                 break;
         }
     }
@@ -71,6 +74,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     {
         currentState = 3;
         glowEffect.SetActive(false);
+        if (hoverEffect != null) hoverEffect.isSuppressed = true;
     }
     public void SetOriginalPosition(Vector3 pos)
     {
@@ -95,6 +99,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         {
             StopCoroutine(animationCoroutine);
         }
+        if (hoverEffect != null) hoverEffect.isSuppressed = true;
         animationCoroutine = StartCoroutine(AnimatePosition(targetPosition));
     }
 
@@ -126,6 +131,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         if (Vector3.Distance(startPosition, targetPosition) < 0.01f)
         {
             transform.position = targetPosition;
+            if (hoverEffect != null) hoverEffect.isSuppressed = false;
             yield break;
         }
 
@@ -147,6 +153,11 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
             yield return null;
         }
         transform.position = targetPosition;
+        if (hoverEffect != null)
+        {
+             hoverEffect.isSuppressed = false;
+             hoverEffect.SetOriginalRotation(transform.localRotation);
+        }
         Image discardPileImage = discardTransform.GetComponentInChildren<Image>(true);
         if (discardPileImage != null)
         {
@@ -162,6 +173,7 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 
     private IEnumerator FancyAnimation(Transform target, float pips, GameObject popupPrefab)
     {
+        if (hoverEffect != null) hoverEffect.isSuppressed = true;
         // Setup for scale up + popup
         cardDisplay = GetComponent<CardDisplay>();
         Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
@@ -254,7 +266,11 @@ public class CardMovement : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, originalScale, Time.deltaTime * 10f);
         rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, originalPosition, Time.deltaTime * 10f);
-        rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, originalRotation, Time.deltaTime * 10f);
+        // Only lerp rotation if hoverEffect isn't handling it
+        if (hoverEffect == null)
+        {
+            rectTransform.localRotation = Quaternion.Lerp(rectTransform.localRotation, originalRotation, Time.deltaTime * 10f);
+        }
         glowEffect.SetActive(false);
     }
     private void HandleHoverState()
