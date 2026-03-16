@@ -18,6 +18,11 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene("GameScene");
     }
 
+    public void LoadCredits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
     public void QuitGame()
     {
         Application.Quit();
