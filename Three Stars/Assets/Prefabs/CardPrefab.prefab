@@ -179,7 +179,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4255246728936826731}
+  m_Father: {fileID: 4604257759612486603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -603,7 +603,6 @@ RectTransform:
   - {fileID: 6524028054179602274}
   - {fileID: 2355457403893357813}
   - {fileID: 3696263318480191996}
-  - {fileID: 3948559422447811792}
   m_Father: {fileID: 4604257759612486603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1105,6 +1104,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4255246728936826731}
+  - {fileID: 3948559422447811792}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1215,6 +1215,24 @@ CanvasGroup:
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &256486532671548774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8026178266619572407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a70f516f84c37749bddc00f293e2c36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardBackground: {fileID: 4368600781590449786}
+  rankImage: {fileID: 0}
+  suitImage: {fileID: 0}
+  cardText: {fileID: 0}
+  rankText: {fileID: 0}
+  suitText: {fileID: 0}
+  outline: {fileID: 0}
 --- !u!114 &5656870885679371753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1232,13 +1250,3 @@ MonoBehaviour:
   idleWobbleIntensity: 6.67
   idleWobbleSpeed: 0.68
   isSuppressed: 0
-  m_Script: {fileID: 11500000, guid: 8a70f516f84c37749bddc00f293e2c36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardBackground: {fileID: 4368600781590449786}
-  rankImage: {fileID: 303757479565507949}
-  suitImage: {fileID: 3868581698735053896}
-  cardText: {fileID: 3471469865854053082}
-  rankText: {fileID: 7768192463695294288}
-  suitText: {fileID: 6626442822342058255}
-  outline: {fileID: 0}
