@@ -1084,6 +1084,7 @@ GameObject:
   - component: {fileID: 3958848325581828867}
   - component: {fileID: 5344426714067064684}
   - component: {fileID: 256486532671548774}
+  - component: {fileID: 5656870885679371753}
   m_Layer: 0
   m_Name: CardPrefab
   m_TagString: Untagged
@@ -1214,6 +1215,7 @@ CanvasGroup:
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &256486532671548774
+--- !u!114 &5656870885679371753
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1230,3 +1232,13 @@ MonoBehaviour:
   idleWobbleIntensity: 6.67
   idleWobbleSpeed: 0.68
   isSuppressed: 0
+  m_Script: {fileID: 11500000, guid: 8a70f516f84c37749bddc00f293e2c36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardBackground: {fileID: 4368600781590449786}
+  rankImage: {fileID: 303757479565507949}
+  suitImage: {fileID: 3868581698735053896}
+  cardText: {fileID: 3471469865854053082}
+  rankText: {fileID: 7768192463695294288}
+  suitText: {fileID: 6626442822342058255}
+  outline: {fileID: 0}
